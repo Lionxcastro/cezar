@@ -258,7 +258,7 @@
 
     .snapshot-grid {
       display: grid;
-      grid-template-columns: minmax(280px, 1.8fr) repeat(4, minmax(118px, 1fr));
+      grid-template-columns: minmax(280px, 1.8fr) repeat(5, minmax(112px, 1fr));
       gap: 8px;
     }
 
@@ -320,7 +320,7 @@
 
     .quick-row {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
     }
 
@@ -464,6 +464,39 @@
     .pill.ignore {
       background: var(--red-soft);
       color: var(--red);
+    }
+
+    .data-badge {
+      display: inline-grid;
+      gap: 2px;
+      min-width: 118px;
+      border-radius: 8px;
+      background: var(--panel-2);
+      padding: 7px 9px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .data-badge.ready {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .data-badge.check {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .data-badge.signal {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .data-badge span {
+      color: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0.8;
     }
 
     .score-grid {
@@ -768,12 +801,22 @@
             <p id="metricDecisionNote" class="muted">Act items</p>
           </div>
           <div class="metric">
+            <span>Ready Deals</span>
+            <strong id="metricReadyDeals">0</strong>
+            <p id="metricReadyNote" class="muted">0 need checks</p>
+          </div>
+          <div class="metric">
             <span>Memory</span>
             <strong id="metricTracking">0</strong>
             <p id="metricLearning" class="muted">0 lessons</p>
           </div>
         </div>
         <div class="quick-row">
+          <div class="quick-card">
+            <span>Deal Readiness</span>
+            <strong id="readinessTitle">No ready deals</strong>
+            <p id="readinessText" class="muted">Cezar will separate real deals from market signals.</p>
+          </div>
           <div class="quick-card">
             <span>Watch</span>
             <strong id="watchTitle">No price movement</strong>
@@ -799,6 +842,7 @@
         </div>
         <div class="filters" id="filterBar">
           <button class="filter-button active" type="button" data-filter="all">All</button>
+          <button class="filter-button" type="button" data-filter="ready">Ready Deals</button>
           <button class="filter-button" type="button" data-filter="act">Act</button>
           <button class="filter-button" type="button" data-filter="investigate">Investigate</button>
           <button class="filter-button" type="button" data-filter="sweden">Sweden</button>
@@ -812,6 +856,7 @@
                   <th>Decision</th>
                   <th>Opportunity</th>
                   <th>Scores</th>
+                  <th>Data</th>
                   <th>Money</th>
                   <th>Market</th>
                   <th>Details</th>
@@ -819,7 +864,7 @@
               </thead>
               <tbody id="opportunitiesBody">
                 <tr>
-                  <td colspan="6">
+                  <td colspan="7">
                     <div class="empty">No opportunities loaded yet.</div>
                   </td>
                 </tr>
@@ -959,8 +1004,12 @@
       metricNew: document.getElementById("metricNew"),
       metricDecision: document.getElementById("metricDecision"),
       metricDecisionNote: document.getElementById("metricDecisionNote"),
+      metricReadyDeals: document.getElementById("metricReadyDeals"),
+      metricReadyNote: document.getElementById("metricReadyNote"),
       metricTracking: document.getElementById("metricTracking"),
       metricLearning: document.getElementById("metricLearning"),
+      readinessTitle: document.getElementById("readinessTitle"),
+      readinessText: document.getElementById("readinessText"),
       watchTitle: document.getElementById("watchTitle"),
       watchText: document.getElementById("watchText"),
       learningTitle: document.getElementById("learningTitle"),
@@ -1196,6 +1245,7 @@
       const opportunities = state.opportunities;
       const actItems = opportunities.filter((item) => item.recommendation === "Act");
       const investigateItems = opportunities.filter((item) => item.recommendation === "Investigate");
+      const readiness = buildReadiness(opportunities);
       const firstReview = actItems[0] || investigateItems[0] || opportunities[0];
 
       elements.lastRunText.textContent = status.last_run_at ? "Last run: " + formatDateTime(status.last_run_at) : "No run loaded";
@@ -1205,6 +1255,8 @@
       elements.metricNew.textContent = `${numberText(status.new_opportunities)} new`;
       elements.metricDecision.textContent = numberText(actItems.length);
       elements.metricDecisionNote.textContent = actItems.length === 1 ? "Act item" : "Act items";
+      elements.metricReadyDeals.textContent = numberText(readiness.ready);
+      elements.metricReadyNote.textContent = `${numberText(readiness.needsChecks)} need checks`;
       elements.metricTracking.textContent = numberText(state.trackingCount);
       elements.metricLearning.textContent = `${numberText(status.lessons_created)} new lessons`;
 
@@ -1218,6 +1270,8 @@
 
       const priceChanges = Number(status.price_changes || 0);
       const visibilityDrops = Number(status.visibility_drops || 0);
+      elements.readinessTitle.textContent = readiness.ready ? `${numberText(readiness.ready)} compare-ready` : "No compare-ready deals";
+      elements.readinessText.textContent = `${numberText(readiness.marketSignals)} market signals; ${numberText(readiness.needsChecks)} need price or revenue checks.`;
       elements.watchTitle.textContent = priceChanges ? `${numberText(priceChanges)} price change${priceChanges === 1 ? "" : "s"}` : "No price movement";
       elements.watchText.textContent = visibilityDrops ? `${numberText(visibilityDrops)} visibility drop${visibilityDrops === 1 ? "" : "s"} detected.` : `${numberText(status.missed_observations)} missed observations from active sources.`;
       elements.learningTitle.textContent = status.archived_count ? `${numberText(status.archived_count)} archived` : `${numberText(status.lessons_created)} new lesson${Number(status.lessons_created) === 1 ? "" : "s"}`;
@@ -1300,7 +1354,7 @@
       const opportunities = filteredOpportunities();
       elements.opportunityCountText.textContent = `${opportunities.length} shown / ${state.opportunities.length} loaded`;
       if (!opportunities.length) {
-        elements.opportunitiesBody.innerHTML = '<tr><td colspan="6"><div class="empty">No opportunities match this filter.</div></td></tr>';
+        elements.opportunitiesBody.innerHTML = '<tr><td colspan="7"><div class="empty">No opportunities match this filter.</div></td></tr>';
         elements.opportunityDetail.innerHTML = '<div class="empty">No details to show.</div>';
         return;
       }
@@ -1322,6 +1376,7 @@
               </div>
             </td>
             <td>${scoreHtml(item)}</td>
+            <td>${readinessBadge(item)}</td>
             <td><strong>${formatMoney(item.price, item)}</strong><br><span class="muted">Revenue ${formatMoney(item.monthly_revenue, item)}</span></td>
             <td>${escapeHtml(item.source || "Unknown")}<br><span class="muted">${escapeHtml(item.category || "unknown")} | ${escapeHtml(item.country || "Unknown")}</span></td>
             <td><button type="button" data-view-id="${escapeAttribute(item.id)}">Details</button></td>
@@ -1333,9 +1388,65 @@
       renderOpportunityDetail(selected);
     }
 
+    function buildReadiness(opportunities) {
+      const totals = { ready: 0, needsPrice: 0, needsRevenue: 0, marketSignals: 0, needsChecks: 0 };
+      opportunities.forEach((item) => {
+        if (hasPrice(item) && hasRevenue(item)) {
+          totals.ready += 1;
+        } else if (!hasPrice(item) && hasRevenue(item)) {
+          totals.needsPrice += 1;
+        } else if (hasPrice(item) && !hasRevenue(item)) {
+          totals.needsRevenue += 1;
+        } else {
+          totals.marketSignals += 1;
+        }
+      });
+      totals.needsChecks = totals.needsPrice + totals.needsRevenue;
+      return totals;
+    }
+
+    function hasPrice(item) {
+      return Number(item && item.price || 0) > 0;
+    }
+
+    function hasRevenue(item) {
+      return Number(item && item.monthly_revenue || 0) > 0;
+    }
+
+    function dataConfidenceLabel(item) {
+      if (hasPrice(item) && hasRevenue(item)) return "price and revenue present";
+      if (!hasPrice(item) && hasRevenue(item)) return "needs asking price";
+      if (hasPrice(item) && !hasRevenue(item)) return "needs revenue proof";
+      return "market signal only";
+    }
+
+    function nextCheck(item) {
+      if (hasPrice(item) && hasRevenue(item)) return "verify seller and revenue";
+      if (!hasPrice(item) && hasRevenue(item)) return "find asking price";
+      if (hasPrice(item) && !hasRevenue(item)) return "verify monthly revenue";
+      return "track before acting";
+    }
+
+    function readinessBadge(item) {
+      let level = "signal";
+      let label = "Market signal";
+      if (hasPrice(item) && hasRevenue(item)) {
+        level = "ready";
+        label = "Ready";
+      } else if (!hasPrice(item) && hasRevenue(item)) {
+        level = "check";
+        label = "Need price";
+      } else if (hasPrice(item) && !hasRevenue(item)) {
+        level = "check";
+        label = "Need revenue";
+      }
+      return `<span class="data-badge ${level}">${escapeHtml(label)}<span>${escapeHtml(nextCheck(item))}</span></span>`;
+    }
+
     function filteredOpportunities() {
       return state.opportunities.filter((item) => {
         if (state.activeFilter === "all") return true;
+        if (state.activeFilter === "ready") return hasPrice(item) && hasRevenue(item);
         if (state.activeFilter === "act") return item.recommendation === "Act";
         if (state.activeFilter === "investigate") return item.recommendation === "Investigate";
         if (state.activeFilter === "sweden") return item.country === "Sweden";
@@ -1365,6 +1476,8 @@
           ${fact("Boss Fit", scoreMeaning("boss", item.boss_fit_score))}
           ${fact("Risk", scoreMeaning("risk", item.risk_score))}
           ${fact("Learning", scoreMeaning("learning", item.learning_score))}
+          ${fact("Data", dataConfidenceLabel(item))}
+          ${fact("Next Check", nextCheck(item))}
           ${fact("Price", formatMoney(item.price, item))}
           ${fact("Revenue", formatMoney(item.monthly_revenue, item))}
           ${fact("Seen", numberText(item.seen_count || 1))}
