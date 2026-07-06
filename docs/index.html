@@ -6,22 +6,21 @@
   <title>Cezar V1 Dashboard</title>
   <style>
     :root {
-      color-scheme: light;
-      --bg: #eef2f6;
-      --surface: #ffffff;
-      --surface-2: #f7f9fc;
-      --ink: #151b23;
-      --muted: #667085;
-      --line: #d7dee8;
-      --green: #177245;
-      --green-soft: #e8f6ee;
-      --blue: #205bcf;
-      --blue-soft: #eaf1ff;
-      --amber: #9a6700;
-      --amber-soft: #fff6df;
-      --red: #b42318;
-      --red-soft: #fff0ee;
-      --slate: #344054;
+      --bg: #eef3f7;
+      --panel: #ffffff;
+      --panel-2: #f7f9fc;
+      --text: #0c1726;
+      --muted: #59677c;
+      --line: #d4dde9;
+      --blue: #2457d6;
+      --blue-soft: #e9efff;
+      --green: #0a7a3d;
+      --green-soft: #e5f6ed;
+      --amber: #9a6400;
+      --amber-soft: #fff3d7;
+      --red: #aa1f1f;
+      --red-soft: #fde8e8;
+      --shadow: 0 18px 45px rgba(24, 39, 75, 0.12);
     }
 
     * {
@@ -30,10 +29,9 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
-      color: var(--ink);
       background: var(--bg);
-      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      font: 16px/1.45 Arial, Helvetica, sans-serif;
     }
 
     button,
@@ -42,174 +40,189 @@
       font: inherit;
     }
 
-    button {
-      border: 0;
-      border-radius: 6px;
-      min-height: 38px;
-      padding: 0 14px;
-      background: var(--slate);
-      color: white;
-      font-weight: 700;
+    button,
+    .button-link {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
       cursor: pointer;
+      font-weight: 700;
+      min-height: 42px;
+      padding: 9px 14px;
+      text-decoration: none;
+    }
+
+    button:hover,
+    .button-link:hover {
+      border-color: #9baac0;
     }
 
     button.primary {
       background: var(--blue);
+      border-color: var(--blue);
+      color: #ffffff;
     }
 
     button.ghost {
-      border: 1px solid var(--line);
-      background: white;
-      color: var(--ink);
-    }
-
-    a {
-      color: var(--blue);
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    .shell {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: 100vh;
-    }
-
-    aside {
-      border-right: 1px solid var(--line);
-      background: var(--surface);
-      padding: 22px;
-      display: grid;
-      align-content: start;
-      gap: 18px;
-    }
-
-    main {
-      min-width: 0;
-      padding: 24px;
-      display: grid;
-      gap: 18px;
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      margin: 0;
-    }
-
-    h1 {
-      font-size: 26px;
-      letter-spacing: 0;
-    }
-
-    h2 {
-      font-size: 18px;
-      letter-spacing: 0;
-    }
-
-    h3 {
-      font-size: 14px;
-      letter-spacing: 0;
-    }
-
-    .brand {
-      display: grid;
-      gap: 8px;
-    }
-
-    .brand-mark {
-      display: grid;
-      place-items: center;
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
-      background: #13233a;
-      color: white;
-      font-size: 20px;
-      font-weight: 800;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .panel {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface);
-      padding: 16px;
-      min-width: 0;
-    }
-
-    .panel-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .form {
-      display: grid;
-      gap: 10px;
-    }
-
-    label {
-      display: grid;
-      gap: 6px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
+      background: transparent;
     }
 
     input,
     textarea {
       width: 100%;
       border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 8px 10px;
-      color: var(--ink);
-      background: white;
-    }
-
-    input {
-      min-height: 38px;
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--text);
+      padding: 11px 12px;
     }
 
     textarea {
-      min-height: 76px;
+      min-height: 88px;
       resize: vertical;
     }
 
-    .message {
-      border-radius: 6px;
-      padding: 10px 12px;
-      background: var(--blue-soft);
-      color: #173b7a;
-      font-size: 13px;
-      line-height: 1.45;
+    label {
+      display: grid;
+      gap: 7px;
+      color: var(--muted);
+      font-weight: 700;
     }
 
-    .message.error {
+    .muted {
+      color: var(--muted);
+    }
+
+    .setup {
+      display: none;
+      min-height: 100vh;
+      place-items: center;
+      padding: 22px;
+    }
+
+    .setup.visible {
+      display: grid;
+    }
+
+    .setup-card {
+      width: min(760px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .setup-card h1,
+    .setup-card p {
+      margin: 0;
+    }
+
+    .setup-card .brand-row {
+      margin-bottom: 22px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mark {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border-radius: 8px;
+      background: #10213a;
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .setup-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .app {
+      display: none;
+    }
+
+    .app.visible {
+      display: block;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 14px 22px;
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      background: var(--amber-soft);
+      color: var(--amber);
+      font-size: 14px;
+      font-weight: 800;
+      min-height: 34px;
+      padding: 6px 12px;
+    }
+
+    .badge.success {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
+    .badge.failure {
       background: var(--red-soft);
       color: var(--red);
+    }
+
+    main {
+      display: grid;
+      gap: 16px;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 18px 22px 36px;
+    }
+
+    .message {
+      display: none;
+      border-radius: 8px;
+      padding: 12px 14px;
+      background: var(--blue-soft);
+      color: #133c97;
+      font-weight: 700;
+    }
+
+    .message.visible {
+      display: block;
     }
 
     .message.ok {
@@ -217,63 +230,193 @@
       color: var(--green);
     }
 
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .metric {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface);
-      padding: 14px;
-      min-height: 92px;
-      display: grid;
-      align-content: space-between;
-      gap: 10px;
-    }
-
-    .metric span {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .metric strong {
-      font-size: 24px;
-      letter-spacing: 0;
-    }
-
-    .status-badge,
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 26px;
-      border-radius: 999px;
-      padding: 0 10px;
-      font-size: 12px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .status-badge.success,
-    .pill.act {
-      background: var(--green-soft);
-      color: var(--green);
-    }
-
-    .status-badge.failure,
-    .pill.ignore {
+    .message.error {
       background: var(--red-soft);
       color: var(--red);
     }
 
-    .status-badge.unknown,
-    .pill.monitor {
-      background: var(--amber-soft);
-      color: var(--amber);
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1.4fr repeat(4, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .panel,
+    .summary-card,
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+
+    .summary-card {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      min-height: 140px;
+      padding: 18px;
+    }
+
+    .summary-card h2 {
+      margin: 0;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .summary-card strong {
+      font-size: clamp(22px, 2vw, 32px);
+      line-height: 1.15;
+    }
+
+    .summary-card p,
+    .metric p {
+      margin: 0;
+    }
+
+    .metric {
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      min-height: 120px;
+      padding: 16px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .metric strong {
+      font-size: 28px;
+    }
+
+    .quick-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .quick-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      padding: 16px;
+    }
+
+    .quick-card span {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .quick-card strong {
+      display: block;
+      margin: 7px 0 4px;
+      font-size: 20px;
+    }
+
+    .panel {
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 16px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--panel-2);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .filter-button.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #ffffff;
+    }
+
+    .opportunity-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
+      min-height: 520px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 860px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 13px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f1f5f9;
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    tr.selected {
+      background: #f2f7ff;
+    }
+
+    .name-cell {
+      display: grid;
+      gap: 5px;
+      max-width: 540px;
+    }
+
+    .name-cell strong {
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .description-line {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      min-width: 74px;
+      padding: 6px 10px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .pill.act {
+      background: var(--green-soft);
+      color: var(--green);
     }
 
     .pill.investigate {
@@ -281,289 +424,145 @@
       color: var(--blue);
     }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
-      gap: 18px;
-      align-items: start;
+    .pill.monitor {
+      background: var(--amber-soft);
+      color: var(--amber);
     }
 
-    .report {
-      min-height: 260px;
-      max-height: 420px;
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fbfcfe;
-      padding: 16px;
-      white-space: pre-wrap;
-      line-height: 1.55;
-      font-family: Consolas, "Courier New", monospace;
-      font-size: 13px;
-    }
-
-    .boss-focus {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .source-health {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .health-card {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface-2);
-      padding: 12px;
-      display: grid;
-      gap: 6px;
-      min-height: 92px;
-    }
-
-    .health-card span {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .health-card strong {
-      font-size: 20px;
-      line-height: 1.2;
-    }
-
-    .focus-card {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface);
-      padding: 14px;
-      display: grid;
-      gap: 8px;
-      min-height: 126px;
-    }
-
-    .focus-card strong {
-      font-size: 18px;
-      line-height: 1.3;
-    }
-
-    .brief-list {
-      display: grid;
-      gap: 10px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .brief-list li {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface-2);
-      padding: 12px;
-      line-height: 1.45;
-    }
-
-    .raw-report-details {
-      margin-top: 12px;
-      background: var(--surface-2);
-    }
-
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 14px;
-      align-items: center;
-      padding: 10px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface-2);
-    }
-
-    .filter-label {
-      color: var(--ink);
-      font-size: 13px;
-      font-weight: 800;
-      margin-right: 4px;
-    }
-
-    .filter-button {
-      min-height: 34px;
-      border: 1px solid var(--line);
-      background: white;
-      color: var(--ink);
-      padding: 0 12px;
-    }
-
-    .filter-button.active {
-      border-color: var(--blue);
-      background: var(--blue-soft);
-      color: var(--blue);
-    }
-
-    .view-button {
-      min-height: 32px;
-      padding: 0 10px;
-      background: var(--blue);
-      color: white;
-      white-space: nowrap;
-    }
-
-    .opportunity-workspace {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 16px;
-      align-items: start;
-    }
-
-    tr.selected-row td {
-      background: #f3f7ff;
-    }
-
-    .detail-panel {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface-2);
-      padding: 14px;
-      display: grid;
-      gap: 12px;
-    }
-
-    .detail-panel h3 {
-      font-size: 18px;
-      line-height: 1.3;
-    }
-
-    .detail-block {
-      display: grid;
-      gap: 6px;
-      border-top: 1px solid var(--line);
-      padding-top: 12px;
-    }
-
-    .detail-block:first-child {
-      border-top: 0;
-      padding-top: 0;
-    }
-
-    .detail-block p {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .small-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .small-fact {
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      background: white;
-      padding: 8px;
-      display: grid;
-      gap: 4px;
-      font-size: 13px;
-    }
-
-    .small-fact span {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .feedback-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .feedback-buttons button {
-      border: 1px solid var(--line);
-      background: white;
-      color: var(--ink);
-    }
-
-    .feedback-buttons button:hover {
-      border-color: var(--blue);
-      color: var(--blue);
-    }
-
-    .feedback-status {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
-      min-height: 18px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 13px;
-    }
-
-    th,
-    td {
-      border-bottom: 1px solid var(--line);
-      padding: 11px 10px;
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
-      color: var(--muted);
-      background: var(--surface-2);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    td {
-      line-height: 1.4;
-    }
-
-    .name-cell {
-      display: grid;
-      gap: 5px;
-    }
-
-    .name-cell strong {
-      font-size: 14px;
+    .pill.ignore {
+      background: var(--red-soft);
+      color: var(--red);
     }
 
     .score-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 4px;
-      min-width: 140px;
+      grid-template-columns: repeat(2, minmax(70px, 1fr));
+      gap: 6px;
     }
 
     .score {
-      border-radius: 5px;
-      background: var(--surface-2);
-      padding: 5px 6px;
-      font-size: 12px;
+      border-radius: 7px;
+      background: #f4f6fa;
+      padding: 6px 8px;
       white-space: nowrap;
     }
 
-    .score.risk-high {
+    .risk-high {
       background: var(--red-soft);
       color: var(--red);
-      font-weight: 800;
     }
 
-    .score.risk-mid {
+    .risk-mid {
       background: var(--amber-soft);
       color: var(--amber);
+    }
+
+    .detail {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      border-left: 1px solid var(--line);
+      background: var(--panel);
+      padding: 18px;
+    }
+
+    .detail h3,
+    .detail p {
+      margin: 0;
+    }
+
+    .detail-title {
+      display: grid;
+      gap: 10px;
+    }
+
+    .detail-title h3 {
+      font-size: 24px;
+      line-height: 1.15;
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .fact {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
+      padding: 10px;
+    }
+
+    .fact span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
       font-weight: 800;
     }
 
-    .list {
+    .fact strong {
+      display: block;
+      margin-top: 4px;
+    }
+
+    .detail-actions,
+    .feedback-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .drawer {
+      width: min(880px, calc(100vw - 28px));
+      max-height: min(760px, calc(100vh - 40px));
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 0;
+    }
+
+    .drawer::backdrop {
+      background: rgba(12, 23, 38, 0.45);
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 14px 18px;
+    }
+
+    .drawer-head h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .drawer-body {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .drawer-body pre {
+      max-height: 520px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fafc;
+      padding: 14px;
+      white-space: pre-wrap;
+    }
+
+    .drawer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .lesson-list {
       display: grid;
       gap: 10px;
       margin: 0;
@@ -571,283 +570,188 @@
       list-style: none;
     }
 
-    .lesson {
+    .lesson-list li,
+    .health-card {
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: var(--surface-2);
-      padding: 12px;
-      display: grid;
-      gap: 6px;
-    }
-
-    details {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--surface);
+      background: var(--panel-2);
       padding: 12px;
     }
 
-    summary {
-      cursor: pointer;
-      font-weight: 800;
-    }
-
-    .help-body {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-
-    .footer-note {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
+    .lesson-list h3,
+    .lesson-list p,
+    .health-card p {
+      margin: 0;
     }
 
     .empty {
+      display: grid;
+      min-height: 110px;
+      place-items: center;
       border: 1px dashed var(--line);
       border-radius: 8px;
-      padding: 18px;
       color: var(--muted);
-      background: var(--surface-2);
+      padding: 18px;
       text-align: center;
     }
 
-    @media (max-width: 1050px) {
-      .shell {
+    @media (max-width: 1080px) {
+      .summary-grid,
+      .quick-row,
+      .opportunity-shell {
         grid-template-columns: 1fr;
       }
 
-      aside {
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .metrics {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-
-      .boss-focus {
-        grid-template-columns: 1fr;
-      }
-
-      .source-health {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .opportunity-workspace {
-        grid-template-columns: 1fr;
-      }
-
-      .detail-panel {
-        position: static;
+      .detail {
+        border-left: 0;
+        border-top: 1px solid var(--line);
       }
     }
 
     @media (max-width: 720px) {
-      main {
-        padding: 14px;
-      }
-
-      .topbar,
-      .panel-head {
+      .topbar {
         align-items: stretch;
         flex-direction: column;
       }
 
-      .metrics {
+      .top-actions,
+      .detail-actions,
+      .feedback-actions {
+        display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .source-health {
+      main {
+        padding: 14px;
+      }
+
+      .drawer-grid,
+      .facts {
         grid-template-columns: 1fr;
-      }
-
-      table {
-        min-width: 820px;
-      }
-
-      .table-wrap {
-        overflow-x: auto;
       }
     }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <aside>
-      <div class="brand">
-        <div class="brand-mark">CZ</div>
-        <h1>Cezar V1</h1>
-        <p class="muted">Cloud agent dashboard for opportunities, reports, lessons, and run status.</p>
+  <section id="setupView" class="setup">
+    <div class="setup-card">
+      <div class="brand-row">
+        <div class="mark">CZ</div>
+        <div>
+          <h1>Cezar V1</h1>
+          <p class="muted">Connect once, then the dashboard opens directly.</p>
+        </div>
       </div>
+      <div class="setup-form">
+        <label>
+          Supabase URL
+          <input id="setupUrlInput" autocomplete="off" value="https://tntohvipsvckyfwvlycv.supabase.co">
+        </label>
+        <label>
+          Publishable key only
+          <input id="setupKeyInput" autocomplete="off" type="password" placeholder="Paste sb_publishable... here">
+        </label>
+        <div class="detail-actions">
+          <button id="setupSaveButton" class="primary" type="button">Save And Open</button>
+          <button id="setupShowButton" type="button">Show Key</button>
+        </div>
+        <p class="muted">Never use the secret key here.</p>
+      </div>
+    </div>
+  </section>
 
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Connection</h2>
-          <span id="connectionBadge" class="status-badge unknown">not loaded</span>
+  <section id="appView" class="app">
+    <header class="topbar">
+      <div class="brand-row">
+        <div class="mark">CZ</div>
+        <div>
+          <h1>Cezar V1</h1>
+          <div id="lastRunText" class="muted">Loading status...</div>
         </div>
-        <div class="form">
-          <label>
-            Supabase URL
-            <input id="supabaseUrlInput" autocomplete="off" value="https://tntohvipsvckyfwvlycv.supabase.co">
-          </label>
-          <label>
-            Publishable key only
-            <input id="publishableKeyInput" autocomplete="off" type="password" placeholder="Paste sb_publishable... here">
-          </label>
-          <div class="actions">
-            <button id="saveSettingsButton" class="primary" type="button">Save</button>
-            <button id="showKeyButton" class="ghost" type="button">Show</button>
-            <button id="clearSettingsButton" class="ghost" type="button">Clear</button>
-          </div>
-          <p class="footer-note">Never put the secret key in this dashboard. The secret key stays only in GitHub Actions.</p>
-        </div>
-      </section>
-
-      <details open>
-        <summary>What the scores mean</summary>
-        <div class="help-body">
-          Opportunity means general attractiveness. Boss Fit means fit with budget, country, and categories. Risk is opposite: higher means more dangerous. Learning means how much Cezar can learn from the opportunity.
-        </div>
-      </details>
-
-      <details>
-        <summary>Recommendations</summary>
-        <div class="help-body">
-          Act means review now, still with Boss approval. Investigate means research before deciding. Monitor means keep watching. Ignore means weak fit or too risky for now.
-        </div>
-      </details>
-    </aside>
+      </div>
+      <div class="top-actions">
+        <span id="connectionBadge" class="badge">not loaded</span>
+        <button id="refreshButton" class="primary" type="button">Refresh</button>
+        <button type="button" data-open="settingsDialog">Settings</button>
+        <button type="button" data-open="explainDialog">Explain</button>
+        <button type="button" data-open="reportDialog">Report</button>
+        <button type="button" data-open="learningDialog">Learning</button>
+        <button type="button" data-open="healthDialog">Health</button>
+      </div>
+    </header>
 
     <main>
-      <div class="topbar">
-        <div>
-          <h1>Dashboard</h1>
-          <p id="lastRunText" class="muted">Load Cezar data to see the latest run.</p>
-        </div>
-        <div class="actions">
-          <button id="refreshButton" class="primary" type="button">Refresh Data</button>
-          <button id="copyReportButton" class="ghost" type="button">Copy Report</button>
-        </div>
-      </div>
+      <div id="messageBox" class="message">Loading...</div>
 
-      <div id="messageBox" class="message">Paste your publishable key once, click Save, then Refresh Data.</div>
-
-      <section class="metrics">
+      <section class="summary-grid">
+        <div class="summary-card">
+          <h2>Best Next Move</h2>
+          <strong id="bestMoveTitle">Load Cezar data</strong>
+          <p id="bestMoveReason" class="muted">The strongest opportunity will appear here.</p>
+        </div>
         <div class="metric">
           <span>Status</span>
           <strong id="metricStatus">-</strong>
+          <p id="metricEmail" class="muted">Email: daily</p>
         </div>
         <div class="metric">
           <span>Scanned</span>
           <strong id="metricScanned">0</strong>
+          <p id="metricNew" class="muted">0 new</p>
         </div>
         <div class="metric">
-          <span>New Saved</span>
-          <strong id="metricNew">0</strong>
+          <span>Today</span>
+          <strong id="metricDecision">0</strong>
+          <p id="metricDecisionNote" class="muted">Act items</p>
         </div>
         <div class="metric">
-          <span>Tracking</span>
+          <span>Memory</span>
           <strong id="metricTracking">0</strong>
-        </div>
-        <div class="metric">
-          <span>New Lessons</span>
-          <strong id="metricLessons">0</strong>
-        </div>
-        <div class="metric">
-          <span>Archived</span>
-          <strong id="metricArchived">0</strong>
+          <p id="metricLearning" class="muted">0 lessons</p>
         </div>
       </section>
 
-      <section class="boss-focus">
-        <div class="focus-card">
-          <span class="pill act">First Review</span>
-          <strong id="focusFirstReview">Load Cezar data</strong>
-          <p id="focusFirstReason" class="muted">The strongest opportunity will appear here.</p>
+      <section class="quick-row">
+        <div class="quick-card">
+          <span>Watch</span>
+          <strong id="watchTitle">No price movement</strong>
+          <p id="watchText" class="muted">Cezar will keep tracking the market.</p>
         </div>
-        <div class="focus-card">
-          <span class="pill investigate">Today</span>
-          <strong id="focusToday">No decision yet</strong>
-          <p id="focusTodayReason" class="muted">Cezar will explain whether there is anything worth action today.</p>
+        <div class="quick-card">
+          <span>Learning</span>
+          <strong id="learningTitle">No new lesson</strong>
+          <p id="learningText" class="muted">Learning continues in the background.</p>
         </div>
-        <div class="focus-card">
-          <span class="pill monitor">Watch</span>
-          <strong id="focusWatch">Tracking not loaded</strong>
-          <p id="focusWatchReason" class="muted">Market tracking tells us what Cezar is learning over time.</p>
+        <div class="quick-card">
+          <span>System</span>
+          <strong id="systemTitle">Health not loaded</strong>
+          <p id="systemText" class="muted">Source status appears after refresh.</p>
         </div>
       </section>
 
       <section class="panel">
         <div class="panel-head">
-          <h2>Autopilot And Source Health</h2>
-          <span id="sourceHealthText" class="muted">Not loaded</span>
-        </div>
-        <div id="sourceHealthGrid" class="source-health">
-          <div class="empty">Refresh Cezar data to see source health.</div>
-        </div>
-      </section>
-
-      <section class="grid-2">
-        <div class="panel">
-          <div class="panel-head">
-            <h2>Latest Boss Brief</h2>
-            <span id="reportDateText" class="muted">No report loaded</span>
-          </div>
-          <ul id="briefList" class="brief-list">
-            <li>No brief loaded yet.</li>
-          </ul>
-          <details class="raw-report-details">
-            <summary>Show full raw report</summary>
-            <pre id="reportOutput" class="report">No report loaded yet.</pre>
-          </details>
-        </div>
-
-        <div class="panel">
-          <div class="panel-head">
-            <h2>Latest Lessons</h2>
-            <span id="lessonCountText" class="muted">0 shown</span>
-          </div>
-          <ul id="lessonsList" class="list">
-            <li class="empty">No lessons loaded yet.</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Top Opportunities</h2>
+          <h2>Opportunities</h2>
           <span id="opportunityCountText" class="muted">0 loaded</span>
         </div>
         <div class="filters" id="filterBar">
-          <span class="filter-label">Filters:</span>
           <button class="filter-button active" type="button" data-filter="all">All</button>
           <button class="filter-button" type="button" data-filter="act">Act</button>
           <button class="filter-button" type="button" data-filter="investigate">Investigate</button>
           <button class="filter-button" type="button" data-filter="sweden">Sweden</button>
-          <button class="filter-button" type="button" data-filter="saas">SaaS</button>
           <button class="filter-button" type="button" data-filter="low-risk">Low Risk</button>
         </div>
-        <div class="opportunity-workspace">
-          <aside id="opportunityDetail" class="detail-panel">
-            <div class="empty">Click Details on an opportunity to see why Cezar recommends it.</div>
-          </aside>
+        <div class="opportunity-shell">
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th style="width: 105px;">Decision</th>
+                  <th>Decision</th>
                   <th>Opportunity</th>
-                  <th style="width: 170px;">Scores</th>
-                  <th style="width: 150px;">Money</th>
-                  <th style="width: 120px;">Market</th>
-                  <th style="width: 92px;">Details</th>
+                  <th>Scores</th>
+                  <th>Money</th>
+                  <th>Market</th>
+                  <th>Details</th>
                 </tr>
               </thead>
               <tbody id="opportunitiesBody">
@@ -859,239 +763,347 @@
               </tbody>
             </table>
           </div>
+          <aside id="opportunityDetail" class="detail">
+            <div class="empty">Click Details on an opportunity.</div>
+          </aside>
         </div>
       </section>
     </main>
-  </div>
+  </section>
+
+  <dialog id="settingsDialog" class="drawer">
+    <div class="drawer-head">
+      <h2>Settings</h2>
+      <button class="ghost" type="button" data-close>X</button>
+    </div>
+    <div class="drawer-body">
+      <label>
+        Supabase URL
+        <input id="settingsUrlInput" autocomplete="off">
+      </label>
+      <label>
+        Publishable key only
+        <input id="settingsKeyInput" autocomplete="off" type="password">
+      </label>
+      <div class="detail-actions">
+        <button id="settingsSaveButton" class="primary" type="button">Save</button>
+        <button id="settingsShowButton" type="button">Show Key</button>
+        <button id="settingsClearButton" type="button">Clear</button>
+      </div>
+      <p class="muted">The secret key stays only in GitHub Actions.</p>
+    </div>
+  </dialog>
+
+  <dialog id="explainDialog" class="drawer">
+    <div class="drawer-head">
+      <h2>Explain</h2>
+      <button class="ghost" type="button" data-close>X</button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-grid">
+        <div class="health-card"><strong>Act</strong><p class="muted">Worth reviewing now. Boss still approves before any real action.</p></div>
+        <div class="health-card"><strong>Investigate</strong><p class="muted">Promising enough to research before deciding.</p></div>
+        <div class="health-card"><strong>Monitor</strong><p class="muted">Keep watching. Timing or data is not strong enough yet.</p></div>
+        <div class="health-card"><strong>Ignore</strong><p class="muted">Weak fit, weak opportunity, or too risky for now.</p></div>
+        <div class="health-card"><strong>Opportunity</strong><p class="muted">General attractiveness.</p></div>
+        <div class="health-card"><strong>Boss Fit</strong><p class="muted">Fit with budget, country, and preferred categories.</p></div>
+        <div class="health-card"><strong>Risk</strong><p class="muted">Higher means more dangerous.</p></div>
+        <div class="health-card"><strong>Learning</strong><p class="muted">How much Cezar can learn from this item.</p></div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="reportDialog" class="drawer">
+    <div class="drawer-head">
+      <h2>Boss Report</h2>
+      <div class="detail-actions">
+        <button id="copyReportButton" type="button">Copy</button>
+        <button class="ghost" type="button" data-close>X</button>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <div id="briefBox" class="drawer-grid"></div>
+      <pre id="reportOutput">No report loaded.</pre>
+    </div>
+  </dialog>
+
+  <dialog id="learningDialog" class="drawer">
+    <div class="drawer-head">
+      <h2>Learning</h2>
+      <button class="ghost" type="button" data-close>X</button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-grid">
+        <div class="health-card"><strong id="learningModalLessons">0</strong><p class="muted">Lessons from latest run</p></div>
+        <div class="health-card"><strong id="learningModalArchived">0</strong><p class="muted">Archived after learning</p></div>
+      </div>
+      <ul id="lessonsList" class="lesson-list">
+        <li class="empty">No lessons loaded.</li>
+      </ul>
+    </div>
+  </dialog>
+
+  <dialog id="healthDialog" class="drawer">
+    <div class="drawer-head">
+      <h2>System Health</h2>
+      <button class="ghost" type="button" data-close>X</button>
+    </div>
+    <div class="drawer-body">
+      <div id="healthGrid" class="drawer-grid">
+        <div class="empty">Refresh Cezar data to see health.</div>
+      </div>
+    </div>
+  </dialog>
 
   <script>
-    const settingsKey = "cezar-dashboard-settings-v1";
-    const recommendationWeight = {
-      Act: 4,
-      Investigate: 3,
-      Monitor: 2,
-      Ignore: 1
-    };
-
+    const settingsKey = "cezar-dashboard-settings-v2";
+    const oldSettingsKey = "cezar-dashboard-settings-v1";
+    const recommendationWeight = { Act: 4, Investigate: 3, Monitor: 2, Ignore: 1 };
     const state = {
       settings: loadSettings(),
       latestReportText: "",
+      latestReport: {},
+      latestStatus: {},
+      lessons: [],
       opportunities: [],
+      trackingCount: 0,
       activeFilter: "all",
-      selectedOpportunityId: "",
-      latestStatus: {}
+      selectedOpportunityId: ""
     };
 
     const elements = {
-      supabaseUrlInput: document.getElementById("supabaseUrlInput"),
-      publishableKeyInput: document.getElementById("publishableKeyInput"),
-      saveSettingsButton: document.getElementById("saveSettingsButton"),
-      showKeyButton: document.getElementById("showKeyButton"),
-      clearSettingsButton: document.getElementById("clearSettingsButton"),
+      setupView: document.getElementById("setupView"),
+      appView: document.getElementById("appView"),
+      setupUrlInput: document.getElementById("setupUrlInput"),
+      setupKeyInput: document.getElementById("setupKeyInput"),
+      setupSaveButton: document.getElementById("setupSaveButton"),
+      setupShowButton: document.getElementById("setupShowButton"),
+      settingsUrlInput: document.getElementById("settingsUrlInput"),
+      settingsKeyInput: document.getElementById("settingsKeyInput"),
+      settingsSaveButton: document.getElementById("settingsSaveButton"),
+      settingsShowButton: document.getElementById("settingsShowButton"),
+      settingsClearButton: document.getElementById("settingsClearButton"),
       refreshButton: document.getElementById("refreshButton"),
       copyReportButton: document.getElementById("copyReportButton"),
-      messageBox: document.getElementById("messageBox"),
       connectionBadge: document.getElementById("connectionBadge"),
+      messageBox: document.getElementById("messageBox"),
       lastRunText: document.getElementById("lastRunText"),
+      bestMoveTitle: document.getElementById("bestMoveTitle"),
+      bestMoveReason: document.getElementById("bestMoveReason"),
       metricStatus: document.getElementById("metricStatus"),
+      metricEmail: document.getElementById("metricEmail"),
       metricScanned: document.getElementById("metricScanned"),
       metricNew: document.getElementById("metricNew"),
+      metricDecision: document.getElementById("metricDecision"),
+      metricDecisionNote: document.getElementById("metricDecisionNote"),
       metricTracking: document.getElementById("metricTracking"),
-      metricLessons: document.getElementById("metricLessons"),
-      metricArchived: document.getElementById("metricArchived"),
-      focusFirstReview: document.getElementById("focusFirstReview"),
-      focusFirstReason: document.getElementById("focusFirstReason"),
-      focusToday: document.getElementById("focusToday"),
-      focusTodayReason: document.getElementById("focusTodayReason"),
-      focusWatch: document.getElementById("focusWatch"),
-      focusWatchReason: document.getElementById("focusWatchReason"),
-      sourceHealthText: document.getElementById("sourceHealthText"),
-      sourceHealthGrid: document.getElementById("sourceHealthGrid"),
-      reportDateText: document.getElementById("reportDateText"),
-      briefList: document.getElementById("briefList"),
-      reportOutput: document.getElementById("reportOutput"),
-      lessonsList: document.getElementById("lessonsList"),
-      lessonCountText: document.getElementById("lessonCountText"),
-      filterBar: document.getElementById("filterBar"),
-      opportunitiesBody: document.getElementById("opportunitiesBody"),
+      metricLearning: document.getElementById("metricLearning"),
+      watchTitle: document.getElementById("watchTitle"),
+      watchText: document.getElementById("watchText"),
+      learningTitle: document.getElementById("learningTitle"),
+      learningText: document.getElementById("learningText"),
+      systemTitle: document.getElementById("systemTitle"),
+      systemText: document.getElementById("systemText"),
       opportunityCountText: document.getElementById("opportunityCountText"),
-      opportunityDetail: document.getElementById("opportunityDetail")
+      opportunitiesBody: document.getElementById("opportunitiesBody"),
+      opportunityDetail: document.getElementById("opportunityDetail"),
+      filterBar: document.getElementById("filterBar"),
+      briefBox: document.getElementById("briefBox"),
+      reportOutput: document.getElementById("reportOutput"),
+      learningModalLessons: document.getElementById("learningModalLessons"),
+      learningModalArchived: document.getElementById("learningModalArchived"),
+      lessonsList: document.getElementById("lessonsList"),
+      healthGrid: document.getElementById("healthGrid")
     };
 
-    applySettingsToForm();
+    init();
 
-    elements.saveSettingsButton.addEventListener("click", () => {
-      state.settings = {
-        url: cleanUrl(elements.supabaseUrlInput.value),
-        key: elements.publishableKeyInput.value.trim()
-      };
-      localStorage.setItem(settingsKey, JSON.stringify(state.settings));
-      setMessage("Connection saved in this browser. Click Refresh Data.", "ok");
-    });
-
-    elements.clearSettingsButton.addEventListener("click", () => {
-      localStorage.removeItem(settingsKey);
-      state.settings = loadSettings();
-      applySettingsToForm();
-      setMessage("Connection cleared from this browser.", "");
-    });
-
-    elements.showKeyButton.addEventListener("click", () => {
-      const input = elements.publishableKeyInput;
-      const isHidden = input.type === "password";
-      input.type = isHidden ? "text" : "password";
-      elements.showKeyButton.textContent = isHidden ? "Hide" : "Show";
-    });
-
-    elements.refreshButton.addEventListener("click", loadDashboard);
-    elements.copyReportButton.addEventListener("click", copyReport);
-    elements.filterBar.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-filter]");
-      if (!button) {
-        return;
+    function init() {
+      applySettingsToInputs();
+      bindEvents();
+      if (state.settings.url && state.settings.key) {
+        showApp();
+        loadDashboard();
+      } else {
+        showSetup();
       }
+    }
 
-      state.activeFilter = button.dataset.filter;
-      renderFilterButtons();
-      renderOpportunities();
-    });
+    function bindEvents() {
+      elements.setupSaveButton.addEventListener("click", saveFromSetup);
+      elements.setupShowButton.addEventListener("click", () => togglePassword(elements.setupKeyInput));
+      elements.settingsSaveButton.addEventListener("click", saveFromSettings);
+      elements.settingsShowButton.addEventListener("click", () => togglePassword(elements.settingsKeyInput));
+      elements.settingsClearButton.addEventListener("click", clearSettings);
+      elements.refreshButton.addEventListener("click", loadDashboard);
+      elements.copyReportButton.addEventListener("click", copyReport);
 
-    elements.opportunitiesBody.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-view-id]");
-      if (button) {
-        state.selectedOpportunityId = button.dataset.viewId;
+      document.querySelectorAll("[data-open]").forEach((button) => {
+        button.addEventListener("click", () => openDialog(button.dataset.open));
+      });
+      document.querySelectorAll("[data-close]").forEach((button) => {
+        button.addEventListener("click", () => button.closest("dialog").close());
+      });
+
+      elements.filterBar.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-filter]");
+        if (!button) {
+          return;
+        }
+        state.activeFilter = button.dataset.filter;
+        renderFilterButtons();
         renderOpportunities();
-        elements.opportunityDetail.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      });
+
+      elements.opportunitiesBody.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-view-id]");
+        const row = event.target.closest("[data-opportunity-id]");
+        const id = button?.dataset.viewId || row?.dataset.opportunityId;
+        if (!id) {
+          return;
+        }
+        state.selectedOpportunityId = id;
+        renderOpportunities();
+      });
+
+      elements.opportunityDetail.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-feedback]");
+        if (button) {
+          saveBossFeedback(button.dataset.feedback);
+        }
+      });
+    }
+
+    function saveFromSetup() {
+      state.settings = {
+        url: cleanUrl(elements.setupUrlInput.value),
+        key: elements.setupKeyInput.value.trim()
+      };
+      if (!state.settings.url || !state.settings.key) {
+        showMessage("Add the Supabase URL and publishable key.", "error");
         return;
       }
-
-      const row = event.target.closest("[data-opportunity-id]");
-      if (!row) {
-        return;
-      }
-
-      state.selectedOpportunityId = row.dataset.opportunityId;
-      renderOpportunities();
-      elements.opportunityDetail.scrollIntoView({ block: "nearest", behavior: "smooth" });
-    });
-
-    elements.opportunityDetail.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-feedback]");
-      if (!button) {
-        return;
-      }
-
-      saveBossFeedback(button.dataset.feedback);
-    });
-
-    if (state.settings.key) {
+      saveSettings();
+      applySettingsToInputs();
+      showApp();
       loadDashboard();
     }
 
-    function loadSettings() {
-      const fallback = {
-        url: "https://tntohvipsvckyfwvlycv.supabase.co",
-        key: ""
+    function saveFromSettings() {
+      state.settings = {
+        url: cleanUrl(elements.settingsUrlInput.value),
+        key: elements.settingsKeyInput.value.trim()
       };
+      if (!state.settings.url || !state.settings.key) {
+        showMessage("Add the Supabase URL and publishable key.", "error");
+        return;
+      }
+      saveSettings();
+      applySettingsToInputs();
+      openDialog("settingsDialog", false);
+      loadDashboard();
+    }
 
+    function clearSettings() {
+      localStorage.removeItem(settingsKey);
+      localStorage.removeItem(oldSettingsKey);
+      state.settings = { url: "https://tntohvipsvckyfwvlycv.supabase.co", key: "" };
+      applySettingsToInputs();
+      showSetup();
+    }
+
+    function loadSettings() {
+      const fallback = { url: "https://tntohvipsvckyfwvlycv.supabase.co", key: "" };
       try {
-        return { ...fallback, ...JSON.parse(localStorage.getItem(settingsKey) || "{}") };
+        const raw = localStorage.getItem(settingsKey) || localStorage.getItem(oldSettingsKey);
+        return raw ? { ...fallback, ...JSON.parse(raw) } : fallback;
       } catch {
         return fallback;
       }
     }
 
-    function applySettingsToForm() {
-      elements.supabaseUrlInput.value = state.settings.url;
-      elements.publishableKeyInput.value = state.settings.key;
+    function saveSettings() {
+      localStorage.setItem(settingsKey, JSON.stringify(state.settings));
+    }
+
+    function applySettingsToInputs() {
+      elements.setupUrlInput.value = state.settings.url || "https://tntohvipsvckyfwvlycv.supabase.co";
+      elements.setupKeyInput.value = state.settings.key || "";
+      elements.settingsUrlInput.value = state.settings.url || "";
+      elements.settingsKeyInput.value = state.settings.key || "";
+    }
+
+    function showSetup() {
+      elements.setupView.classList.add("visible");
+      elements.appView.classList.remove("visible");
+    }
+
+    function showApp() {
+      elements.setupView.classList.remove("visible");
+      elements.appView.classList.add("visible");
     }
 
     async function loadDashboard() {
-      state.settings = {
-        url: cleanUrl(elements.supabaseUrlInput.value),
-        key: elements.publishableKeyInput.value.trim()
-      };
-
       if (!state.settings.url || !state.settings.key) {
-        setMessage("Add the Supabase URL and publishable key first. Use the publishable key only, not the secret key.", "error");
-        setBadge("missing", "unknown");
+        showSetup();
         return;
       }
-
-      setMessage("Loading Cezar data...", "");
-      setBadge("loading", "unknown");
+      showMessage("Loading Cezar data...", "");
+      setBadge("loading", "");
 
       try {
-        const [
-          statusRows,
-          reportRows,
-          opportunityRows,
-          lessonRows,
-          trackingCount
-        ] = await Promise.all([
+        const [statusRows, reportRows, opportunityRows, lessonRows, trackingCount] = await Promise.all([
           supabaseGet("/rest/v1/cezar_status?id=eq.main&select=*"),
           supabaseGet("/rest/v1/reports?select=*&order=created_at.desc&limit=1"),
-          supabaseGet("/rest/v1/opportunities?select=id,name,source,url,category,country,price,monthly_revenue,currency,description,opportunity_score,boss_fit_score,risk_score,learning_score,recommendation,status,first_seen_at,last_seen_at,seen_count,missed_count,price_change_count,last_market_signal,created_at,updated_at&order=opportunity_score.desc&limit=80"),
-          supabaseGet("/rest/v1/lessons?select=*&order=created_at.desc&limit=8"),
+          supabaseGet("/rest/v1/opportunities?select=id,name,source,url,category,country,price,monthly_revenue,currency,description,opportunity_score,boss_fit_score,risk_score,learning_score,recommendation,status,first_seen_at,last_seen_at,seen_count,missed_count,price_change_count,last_market_signal,created_at,updated_at&order=opportunity_score.desc&limit=100"),
+          supabaseGet("/rest/v1/lessons?select=*&order=created_at.desc&limit=12"),
           supabaseCount("/rest/v1/market_tracking?select=id&limit=1")
         ]);
 
-        renderDashboard({
-          status: statusRows[0] || {},
-          report: reportRows[0] || {},
-          opportunities: opportunityRows || [],
-          lessons: lessonRows || [],
-          trackingCount
-        });
+        state.latestStatus = statusRows[0] || {};
+        state.latestReport = reportRows[0] || {};
+        state.latestReportText = state.latestReport.report_text || "";
+        state.opportunities = sortOpportunities(opportunityRows || []);
+        state.lessons = lessonRows || [];
+        state.trackingCount = trackingCount;
+        if (!state.selectedOpportunityId && state.opportunities[0]) {
+          state.selectedOpportunityId = state.opportunities[0].id;
+        }
 
-        setMessage("Cezar data loaded successfully.", "ok");
+        renderDashboard();
+        showMessage("Cezar data loaded.", "ok");
         setBadge("connected", "success");
       } catch (error) {
-        setMessage(buildErrorMessage(error), "error");
+        showMessage(buildErrorMessage(error), "error");
         setBadge("error", "failure");
       }
     }
 
     async function supabaseGet(path) {
-      const response = await fetch(state.settings.url + path, {
-        headers: buildHeaders()
-      });
-
+      const response = await fetch(state.settings.url + path, { headers: buildHeaders() });
       if (!response.ok) {
         throw new Error(await readableError(response));
       }
-
       return response.json();
     }
 
     async function supabaseCount(path) {
       const response = await fetch(state.settings.url + path, {
-        headers: {
-          ...buildHeaders(),
-          Prefer: "count=exact"
-        }
+        headers: { ...buildHeaders(), Prefer: "count=exact" }
       });
-
       if (!response.ok) {
         throw new Error(await readableError(response));
       }
-
       const contentRange = response.headers.get("content-range") || "";
-      const total = contentRange.split("/")[1];
-      return Number(total || 0);
+      return Number(contentRange.split("/")[1] || 0);
     }
 
     async function supabasePost(path, row) {
       const response = await fetch(state.settings.url + path, {
         method: "POST",
-        headers: {
-          ...buildHeaders(),
-          "Content-Type": "application/json",
-          Prefer: "return=minimal"
-        },
+        headers: { ...buildHeaders(), "Content-Type": "application/json", Prefer: "return=minimal" },
         body: JSON.stringify(row)
       });
-
       if (!response.ok) {
         throw new Error(await readableError(response));
       }
@@ -1115,192 +1127,104 @@
       }
     }
 
-    function renderDashboard(data) {
-      const status = data.status || {};
-      const report = data.report || {};
-      const lessons = data.lessons || [];
-
-      state.latestReportText = report.report_text || "";
-      state.latestStatus = status;
-      state.opportunities = sortOpportunities(data.opportunities || []);
-      if (!state.selectedOpportunityId || !state.opportunities.some((item) => item.id === state.selectedOpportunityId)) {
-        state.selectedOpportunityId = state.opportunities[0]?.id || "";
-      }
-
-      elements.metricStatus.textContent = status.last_status || "unknown";
-      elements.metricScanned.textContent = numberText(status.opportunities_scanned);
-      elements.metricNew.textContent = numberText(status.new_opportunities);
-      elements.metricTracking.textContent = numberText(data.trackingCount);
-      elements.metricLessons.textContent = numberText(status.lessons_created);
-      elements.metricArchived.textContent = numberText(status.archived_count);
-
-      elements.lastRunText.textContent = status.last_run_at
-        ? "Last cloud run: " + formatDateTime(status.last_run_at)
-        : "No cloud status row loaded.";
-
-      elements.reportDateText.textContent = report.created_at
-        ? "Created " + formatDateTime(report.created_at)
-        : "No report loaded";
-      elements.reportOutput.textContent = state.latestReportText || "No report has been saved yet.";
-      renderBossFocus(status, state.opportunities, data.trackingCount);
-      renderSourceHealth(status, state.opportunities, data.trackingCount);
-      renderBriefList(state.latestReportText);
-
-      renderFilterButtons();
-      renderOpportunities();
-      renderLessons(lessons);
-    }
-
-    function renderBossFocus(status, opportunities, trackingCount) {
+    function renderDashboard() {
+      const status = state.latestStatus;
+      const report = state.latestReport;
+      const opportunities = state.opportunities;
       const actItems = opportunities.filter((item) => item.recommendation === "Act");
       const investigateItems = opportunities.filter((item) => item.recommendation === "Investigate");
       const firstReview = actItems[0] || investigateItems[0] || opportunities[0];
 
+      elements.lastRunText.textContent = status.last_run_at ? "Last run: " + formatDateTime(status.last_run_at) : "No run loaded";
+      elements.metricStatus.textContent = status.last_status || "unknown";
+      elements.metricEmail.textContent = "Email: daily";
+      elements.metricScanned.textContent = numberText(status.opportunities_scanned);
+      elements.metricNew.textContent = `${numberText(status.new_opportunities)} new`;
+      elements.metricDecision.textContent = numberText(actItems.length);
+      elements.metricDecisionNote.textContent = actItems.length === 1 ? "Act item" : "Act items";
+      elements.metricTracking.textContent = numberText(state.trackingCount);
+      elements.metricLearning.textContent = `${numberText(status.lessons_created)} new lessons`;
+
       if (firstReview) {
-        elements.focusFirstReview.textContent = firstReview.name;
-        elements.focusFirstReason.textContent = `${firstReview.recommendation || "Monitor"} from ${firstReview.source || "unknown source"} with opportunity score ${numberText(firstReview.opportunity_score)} and risk ${numberText(firstReview.risk_score)}.`;
+        elements.bestMoveTitle.textContent = firstReview.name;
+        elements.bestMoveReason.textContent = `${firstReview.recommendation || "Monitor"} from ${firstReview.source || "unknown source"} with opportunity score ${numberText(firstReview.opportunity_score)} and risk ${numberText(firstReview.risk_score)}.`;
       } else {
-        elements.focusFirstReview.textContent = "No opportunity loaded";
-        elements.focusFirstReason.textContent = "Refresh Cezar data to see the strongest item.";
+        elements.bestMoveTitle.textContent = "No opportunity loaded";
+        elements.bestMoveReason.textContent = "Refresh Cezar data.";
       }
 
-      if (actItems.length) {
-        elements.focusToday.textContent = `${actItems.length} Act item${actItems.length === 1 ? "" : "s"}`;
-        elements.focusTodayReason.textContent = "Review these first, but Boss approval is still required before any real action.";
-      } else if (investigateItems.length) {
-        elements.focusToday.textContent = `${investigateItems.length} Investigate item${investigateItems.length === 1 ? "" : "s"}`;
-        elements.focusTodayReason.textContent = "Research these before deciding. No urgent action is required yet.";
-      } else {
-        elements.focusToday.textContent = "No action needed";
-        elements.focusTodayReason.textContent = "Cezar found nothing strong enough for action in this run.";
-      }
+      const priceChanges = Number(status.price_changes || 0);
+      const visibilityDrops = Number(status.visibility_drops || 0);
+      elements.watchTitle.textContent = priceChanges ? `${numberText(priceChanges)} price change${priceChanges === 1 ? "" : "s"}` : "No price movement";
+      elements.watchText.textContent = visibilityDrops ? `${numberText(visibilityDrops)} visibility drop${visibilityDrops === 1 ? "" : "s"} detected.` : `${numberText(status.missed_observations)} missed observations from active sources.`;
+      elements.learningTitle.textContent = status.archived_count ? `${numberText(status.archived_count)} archived` : `${numberText(status.lessons_created)} new lesson${Number(status.lessons_created) === 1 ? "" : "s"}`;
+      elements.learningText.textContent = "Cezar keeps learning even when the dashboard is closed.";
 
-      elements.focusWatch.textContent = `${numberText(trackingCount)} tracking observations`;
-      elements.focusWatchReason.textContent = status.price_changes
-        ? `${numberText(status.price_changes)} price change${Number(status.price_changes) === 1 ? "" : "s"} detected in the latest run.`
-        : "No price changes in the latest run. Cezar is still building market memory.";
+      const sourceHealth = parseSourceHealth(status.source_health);
+      const failedSources = sourceHealth.filter((item) => item.status === "failed").length;
+      elements.systemTitle.textContent = failedSources ? `${failedSources} source issue${failedSources === 1 ? "" : "s"}` : "Sources ok";
+      elements.systemText.textContent = sourceHealth.length ? `${sourceHealth.length} source checks saved.` : "Source checks will appear after the next upgraded run.";
+
+      renderBrief(report.report_text || "");
+      renderLessons();
+      renderHealth();
+      renderFilterButtons();
+      renderOpportunities();
     }
 
-    function renderSourceHealth(status, opportunities, trackingCount) {
-      const sourceCounts = countBy(opportunities, "source");
-      const topSources = Object.entries(sourceCounts)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 4);
-      const savedSourceHealth = parseSourceHealth(status.source_health);
-      const priceChanges = Number(status.price_changes || 0);
-      const missed = Number(status.missed_observations || 0);
-      const visibilityDrops = Number(status.visibility_drops || 0);
+    function renderBrief(reportText) {
+      elements.reportOutput.textContent = reportText || "No report loaded.";
+      const lines = String(reportText || "").split("\n").map((line) => line.trim());
+      const useful = lines.filter((line) =>
+        line.startsWith("- Status:") ||
+        line.startsWith("- Best next move:") ||
+        line.startsWith("- Rule:") ||
+        line.startsWith("- Daily email:")
+      );
+
+      elements.briefBox.innerHTML = useful.length
+        ? useful.map((line) => `<div class="health-card"><p>${escapeHtml(line.replace(/^- /, ""))}</p></div>`).join("")
+        : '<div class="empty">No brief loaded.</div>';
+    }
+
+    function renderLessons() {
+      const status = state.latestStatus;
+      elements.learningModalLessons.textContent = numberText(status.lessons_created);
+      elements.learningModalArchived.textContent = numberText(status.archived_count);
+      if (!state.lessons.length) {
+        elements.lessonsList.innerHTML = '<li class="empty">No lessons loaded.</li>';
+        return;
+      }
+      elements.lessonsList.innerHTML = state.lessons.map((lesson) => `
+        <li>
+          <h3>${escapeHtml(lesson.title || "Lesson")}</h3>
+          <p class="muted">${escapeHtml(lesson.lesson || "")}</p>
+          <p class="muted">${escapeHtml(lesson.source || "market_tracking")} | ${formatDateTime(lesson.created_at)}</p>
+        </li>
+      `).join("");
+    }
+
+    function renderHealth() {
+      const status = state.latestStatus;
+      const sourceHealth = parseSourceHealth(status.source_health);
       const cards = [
-        healthCard("Latest run", status.last_status || "unknown", status.last_run_at ? formatDateTime(status.last_run_at) : "No run time saved"),
-        healthCard("This scan", numberText(status.opportunities_scanned), `${numberText(status.new_opportunities)} new saved, ${numberText(status.existing_seen)} seen again`),
-        healthCard("Market memory", numberText(trackingCount), `${numberText(status.tracking_records)} observations from latest run`),
-        healthCard("Price changes", numberText(priceChanges), priceChanges ? "Cezar noticed movement worth checking." : "No price movement this run."),
-        healthCard("Missed listings", numberText(missed), missed ? "Some tracked listings were not seen in this scan." : "No tracked listings were missed this run."),
-        healthCard("Visibility drops", numberText(visibilityDrops), visibilityDrops ? "Cezar saw repeated disappearance signals." : "No repeated disappearance signals this run.")
+        healthCard("Latest run", status.last_status || "unknown", status.last_run_at ? formatDateTime(status.last_run_at) : "No time saved"),
+        healthCard("This scan", numberText(status.opportunities_scanned), `${numberText(status.new_opportunities)} new, ${numberText(status.existing_seen)} seen again`),
+        healthCard("Market memory", numberText(state.trackingCount), `${numberText(status.tracking_records)} observations in latest run`),
+        healthCard("Price changes", numberText(status.price_changes), "Latest run"),
+        healthCard("Missed listings", numberText(status.missed_observations), "Latest run"),
+        healthCard("Archived", numberText(status.archived_count), "Moved out of active memory")
       ];
 
-      if (savedSourceHealth.length) {
-        savedSourceHealth.forEach((item) => {
-          const statusText = `${item.status || "unknown"} (${numberText(item.found || 0)})`;
-          cards.push(healthCard(item.source || "Unknown source", statusText, item.note || "latest cloud scan"));
-        });
-      } else {
-        topSources.forEach(([source, count]) => {
-          cards.push(healthCard(source, numberText(count), "loaded in the dashboard"));
-        });
-      }
+      sourceHealth.forEach((item) => {
+        cards.push(healthCard(item.source || "Unknown source", `${item.status || "unknown"} (${numberText(item.found)})`, item.note || "latest scan"));
+      });
 
-      elements.sourceHealthText.textContent = `${numberText(opportunities.length)} opportunities loaded`;
-      elements.sourceHealthGrid.innerHTML = cards.join("");
+      elements.healthGrid.innerHTML = cards.join("");
     }
 
     function healthCard(label, value, note) {
-      return `
-        <div class="health-card">
-          <span>${escapeHtml(label)}</span>
-          <strong>${escapeHtml(value)}</strong>
-          <p class="muted">${escapeHtml(note)}</p>
-        </div>
-      `;
-    }
-
-    function parseSourceHealth(value) {
-      if (!value) {
-        return [];
-      }
-      if (Array.isArray(value)) {
-        return value;
-      }
-      if (typeof value === "string") {
-        try {
-          const parsed = JSON.parse(value);
-          return Array.isArray(parsed) ? parsed : [];
-        } catch {
-          return [];
-        }
-      }
-      return [];
-    }
-
-    function countBy(rows, key) {
-      return rows.reduce((counts, row) => {
-        const value = row[key] || "Unknown";
-        counts[value] = (counts[value] || 0) + 1;
-        return counts;
-      }, {});
-    }
-
-    function renderBriefList(reportText) {
-      const lines = String(reportText || "").split("\n").map((line) => line.trim());
-      const usefulLines = lines.filter((line) => line.startsWith("- Status:") || line.startsWith("- Best next move:") || line.startsWith("- Rule:") || line.startsWith("- Missed observations:") || line.startsWith("- Visibility drops") || line.startsWith("- Act:") || line.startsWith("- Investigate:"));
-
-      if (!usefulLines.length) {
-        elements.briefList.innerHTML = "<li>No brief loaded yet.</li>";
-        return;
-      }
-
-      elements.briefList.innerHTML = usefulLines.slice(0, 5).map((line) => `<li>${escapeHtml(line.replace(/^- /, ""))}</li>`).join("");
-    }
-
-    function renderOpportunities() {
-      const opportunities = filteredOpportunities();
-      elements.opportunityCountText.textContent = `${opportunities.length} shown / ${state.opportunities.length} loaded`;
-
-      if (!opportunities.length) {
-        elements.opportunitiesBody.innerHTML = '<tr><td colspan="6"><div class="empty">No opportunities loaded.</div></td></tr>';
-        elements.opportunityDetail.innerHTML = '<div class="empty">No opportunity matches this filter.</div>';
-        return;
-      }
-
-      elements.opportunitiesBody.innerHTML = opportunities.slice(0, 30).map((item) => {
-        const decisionClass = (item.recommendation || "Monitor").toLowerCase();
-        const selectedClass = item.id === state.selectedOpportunityId ? " selected-row" : "";
-        return `
-          <tr class="${selectedClass}" data-opportunity-id="${escapeAttribute(item.id)}">
-            <td><span class="pill ${escapeHtml(decisionClass)}">${escapeHtml(item.recommendation || "Monitor")}</span></td>
-            <td>
-              <div class="name-cell">
-                <strong>${escapeHtml(item.name || "Untitled opportunity")}</strong>
-                <span class="muted">${escapeHtml(item.description || "")}</span>
-              </div>
-            </td>
-            <td>${scoreHtml(item)}</td>
-            <td>
-              <strong>${formatMoney(item.price, item)}</strong><br>
-              <span class="muted">Revenue ${formatMoney(item.monthly_revenue, item)}</span>
-            </td>
-            <td>
-              ${escapeHtml(item.source || "Unknown")}<br>
-              <span class="muted">${escapeHtml(item.category || "unknown")} | ${escapeHtml(item.country || "Unknown")}</span>
-            </td>
-            <td><button class="view-button" type="button" data-view-id="${escapeAttribute(item.id)}">Details</button></td>
-          </tr>
-        `;
-      }).join("");
-
-      const selected = opportunities.find((item) => item.id === state.selectedOpportunityId) || opportunities[0];
-      state.selectedOpportunityId = selected.id;
-      renderOpportunityDetail(selected);
+      return `<div class="health-card"><strong>${escapeHtml(label)}</strong><p>${escapeHtml(value)}</p><p class="muted">${escapeHtml(note)}</p></div>`;
     }
 
     function renderFilterButtons() {
@@ -1309,133 +1233,127 @@
       });
     }
 
-    function filteredOpportunities() {
-      return state.opportunities.filter((item) => matchesFilter(item, state.activeFilter));
+    function renderOpportunities() {
+      const opportunities = filteredOpportunities();
+      elements.opportunityCountText.textContent = `${opportunities.length} shown / ${state.opportunities.length} loaded`;
+      if (!opportunities.length) {
+        elements.opportunitiesBody.innerHTML = '<tr><td colspan="6"><div class="empty">No opportunities match this filter.</div></td></tr>';
+        elements.opportunityDetail.innerHTML = '<div class="empty">No details to show.</div>';
+        return;
+      }
+
+      if (!opportunities.some((item) => item.id === state.selectedOpportunityId)) {
+        state.selectedOpportunityId = opportunities[0].id;
+      }
+
+      elements.opportunitiesBody.innerHTML = opportunities.slice(0, 35).map((item) => {
+        const selected = item.id === state.selectedOpportunityId ? " selected" : "";
+        const decisionClass = String(item.recommendation || "Monitor").toLowerCase();
+        return `
+          <tr class="${selected}" data-opportunity-id="${escapeAttribute(item.id)}">
+            <td><span class="pill ${escapeHtml(decisionClass)}">${escapeHtml(item.recommendation || "Monitor")}</span></td>
+            <td>
+              <div class="name-cell">
+                <strong>${escapeHtml(item.name || "Untitled")}</strong>
+                <span class="muted description-line">${escapeHtml(item.description || "")}</span>
+              </div>
+            </td>
+            <td>${scoreHtml(item)}</td>
+            <td><strong>${formatMoney(item.price, item)}</strong><br><span class="muted">Revenue ${formatMoney(item.monthly_revenue, item)}</span></td>
+            <td>${escapeHtml(item.source || "Unknown")}<br><span class="muted">${escapeHtml(item.category || "unknown")} | ${escapeHtml(item.country || "Unknown")}</span></td>
+            <td><button type="button" data-view-id="${escapeAttribute(item.id)}">Details</button></td>
+          </tr>
+        `;
+      }).join("");
+
+      const selected = opportunities.find((item) => item.id === state.selectedOpportunityId) || opportunities[0];
+      renderOpportunityDetail(selected);
     }
 
-    function matchesFilter(item, filter) {
-      if (filter === "all") {
+    function filteredOpportunities() {
+      return state.opportunities.filter((item) => {
+        if (state.activeFilter === "all") return true;
+        if (state.activeFilter === "act") return item.recommendation === "Act";
+        if (state.activeFilter === "investigate") return item.recommendation === "Investigate";
+        if (state.activeFilter === "sweden") return item.country === "Sweden";
+        if (state.activeFilter === "low-risk") return Number(item.risk_score || 0) <= 35;
         return true;
-      }
-      if (filter === "act") {
-        return item.recommendation === "Act";
-      }
-      if (filter === "investigate") {
-        return item.recommendation === "Investigate";
-      }
-      if (filter === "sweden") {
-        return item.country === "Sweden";
-      }
-      if (filter === "saas") {
-        return String(item.category || "").toLowerCase().includes("saas");
-      }
-      if (filter === "low-risk") {
-        return Number(item.risk_score || 0) <= 35;
-      }
-      return true;
+      });
     }
 
     function renderOpportunityDetail(item) {
-      const decisionClass = (item.recommendation || "Monitor").toLowerCase();
+      if (!item) {
+        elements.opportunityDetail.innerHTML = '<div class="empty">No opportunity selected.</div>';
+        return;
+      }
+      const decisionClass = String(item.recommendation || "Monitor").toLowerCase();
       elements.opportunityDetail.innerHTML = `
-        <div class="detail-block">
-          <h3>Selected Opportunity</h3>
+        <div class="detail-title">
           <span class="pill ${escapeHtml(decisionClass)}">${escapeHtml(item.recommendation || "Monitor")}</span>
           <h3>${escapeHtml(item.name || "Untitled opportunity")}</h3>
-          <p>${escapeHtml(item.description || "No description saved.")}</p>
+          <p class="muted">${escapeHtml(item.description || "No description saved.")}</p>
         </div>
-        <div class="detail-block">
+        <div>
           <h3>Why Cezar shows this</h3>
-          <p>${escapeHtml(recommendationReason(item))}</p>
+          <p class="muted">${escapeHtml(recommendationReason(item))}</p>
         </div>
-        <div class="detail-block">
-          <h3>Boss next action</h3>
-          <p>${escapeHtml(bossNextAction(item))}</p>
+        <div class="facts">
+          ${fact("Opportunity", scoreMeaning("opportunity", item.opportunity_score))}
+          ${fact("Boss Fit", scoreMeaning("boss", item.boss_fit_score))}
+          ${fact("Risk", scoreMeaning("risk", item.risk_score))}
+          ${fact("Learning", scoreMeaning("learning", item.learning_score))}
+          ${fact("Price", formatMoney(item.price, item))}
+          ${fact("Revenue", formatMoney(item.monthly_revenue, item))}
+          ${fact("Seen", numberText(item.seen_count || 1))}
+          ${fact("Signal", item.last_market_signal || "unknown")}
         </div>
-        <div class="detail-block">
-          <h3>Scores</h3>
-          <div class="small-grid">
-            ${smallFact("Opportunity", scoreMeaning("opportunity", item.opportunity_score))}
-            ${smallFact("Boss Fit", scoreMeaning("boss", item.boss_fit_score))}
-            ${smallFact("Risk", scoreMeaning("risk", item.risk_score))}
-            ${smallFact("Learning", scoreMeaning("learning", item.learning_score))}
+        <div class="detail-actions">
+          ${sourceLink(item.url)}
+        </div>
+        <details>
+          <summary><strong>Boss feedback</strong></summary>
+          <div class="drawer-body">
+            <div class="feedback-actions">
+              <button type="button" data-feedback="interested">Interested</button>
+              <button type="button" data-feedback="not_now">Not now</button>
+              <button type="button" data-feedback="too_risky">Too risky</button>
+              <button type="button" data-feedback="too_expensive">Too expensive</button>
+            </div>
+            <label>
+              Optional note
+              <textarea id="bossFeedbackNote"></textarea>
+            </label>
+            <p id="feedbackStatus" class="muted">Feedback only updates Boss preference memory.</p>
           </div>
-        </div>
-        <div class="detail-block">
-          <h3>Market facts</h3>
-          <div class="small-grid">
-            ${smallFact("Price", formatMoney(item.price, item))}
-            ${smallFact("Monthly Revenue", formatMoney(item.monthly_revenue, item))}
-            ${smallFact("Currency", currencyFor(item))}
-            ${smallFact("Source", item.source || "Unknown")}
-            ${smallFact("Country", item.country || "Unknown")}
-            ${smallFact("Seen Count", numberText(item.seen_count || 1))}
-            ${smallFact("Missed Count", numberText(item.missed_count || 0))}
-            ${smallFact("Last Signal", item.last_market_signal || "unknown")}
-            ${smallFact("Last Seen", item.last_seen_at ? formatDateTime(item.last_seen_at) : "unknown")}
-          </div>
-        </div>
-        <div class="detail-block">
-          <h3>Boss feedback</h3>
-          <p>This is optional. If Boss does nothing, Cezar does not update Boss preferences from this opportunity.</p>
-          <div class="feedback-buttons">
-            <button type="button" data-feedback="interested">Interested</button>
-            <button type="button" data-feedback="not_now">Not now</button>
-            <button type="button" data-feedback="too_risky">Too risky</button>
-            <button type="button" data-feedback="too_expensive">Too expensive</button>
-          </div>
-          <label>
-            Optional note
-            <textarea id="bossFeedbackNote" placeholder="Only write something if it helps Boss preference learning."></textarea>
-          </label>
-          <p id="feedbackStatus" class="feedback-status">No Boss feedback saved for this screen yet.</p>
-        </div>
-        <div class="actions">
-          ${linkButtonHtml(item.url)}
-        </div>
+        </details>
       `;
     }
 
-    function smallFact(label, value) {
-      return `
-        <div class="small-fact">
-          <span>${escapeHtml(label)}</span>
-          <strong>${escapeHtml(value)}</strong>
-        </div>
-      `;
+    function fact(label, value) {
+      return `<div class="fact"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
+    }
+
+    function sourceLink(url) {
+      if (!url) {
+        return '<span class="muted">No source link saved</span>';
+      }
+      return `<a class="button-link" href="${escapeAttribute(url)}" target="_blank" rel="noopener">Open Source</a>`;
     }
 
     function recommendationReason(item) {
-      const risk = Number(item.risk_score || 0);
       const opportunity = Number(item.opportunity_score || 0);
       const fit = Number(item.boss_fit_score || 0);
-      const learning = Number(item.learning_score || 0);
-      const source = item.source || "this source";
-      const category = item.category || "this category";
-
+      const risk = Number(item.risk_score || 0);
       if (item.recommendation === "Act") {
-        return `It has strong opportunity score (${opportunity}), strong Boss fit (${fit}), and manageable risk (${risk}). Cezar also sees learning value (${learning}) in ${category} from ${source}.`;
+        return `Strong signal: opportunity ${opportunity}, Boss fit ${fit}, risk ${risk}. Review before any action.`;
       }
       if (item.recommendation === "Investigate") {
-        return `It has enough positive signal to research, but Cezar is not saying to act yet. Check the real listing, numbers, seller quality, and risk before Boss decides.`;
+        return `Promising, but not automatic action. Check the listing, numbers, source, and seller quality.`;
       }
       if (item.recommendation === "Monitor") {
-        return `It may become interesting later. Cezar should keep watching price, visibility, and market signals before asking Boss for attention.`;
+        return `Worth watching, but Cezar needs stronger evidence before asking for attention.`;
       }
-      return `Cezar does not see enough upside for Boss right now, or the risk is too high compared with the available information.`;
-    }
-
-    function bossNextAction(item) {
-      if (item.recommendation === "Act") {
-        return "Open the listing, verify price and revenue, check seller details, then decide whether it deserves a deeper investigation. Do not buy or contact anyone automatically.";
-      }
-      if (item.recommendation === "Investigate") {
-        return "Spend a short research block checking the listing quality, market, and numbers. If the data stays strong, move it to an action conversation.";
-      }
-      if (item.recommendation === "Monitor") {
-        return "Do nothing now. Let Cezar keep tracking it and wait for stronger evidence.";
-      }
-      return "Ignore for now. Cezar can learn from similar market signals without Boss spending time on this item.";
+      return "Not strong enough for Boss attention right now.";
     }
 
     async function saveBossFeedback(decision) {
@@ -1443,23 +1361,11 @@
       const status = document.getElementById("feedbackStatus");
       const noteInput = document.getElementById("bossFeedbackNote");
       if (!item || !item.id) {
-        if (status) {
-          status.textContent = "No selected opportunity found.";
-        }
+        if (status) status.textContent = "No selected opportunity.";
         return;
       }
-
-      const labels = {
-        interested: "Interested",
-        not_now: "Not now",
-        too_risky: "Too risky",
-        too_expensive: "Too expensive"
-      };
-
-      if (status) {
-        status.textContent = "Saving Boss feedback...";
-      }
-
+      const labels = { interested: "Interested", not_now: "Not now", too_risky: "Too risky", too_expensive: "Too expensive" };
+      if (status) status.textContent = "Saving feedback...";
       try {
         await supabasePost("/rest/v1/boss_feedback", {
           opportunity_id: item.id,
@@ -1467,52 +1373,10 @@
           reason: labels[decision] || decision,
           note: noteInput ? noteInput.value.trim() : ""
         });
-
-        if (status) {
-          status.textContent = `Saved: ${labels[decision] || decision}. This only updates Boss feedback, not automatic market learning.`;
-        }
+        if (status) status.textContent = `Saved: ${labels[decision] || decision}.`;
       } catch (error) {
-        if (status) {
-          status.textContent = "Could not save feedback: " + String(error.message || error);
-        }
+        if (status) status.textContent = "Could not save feedback: " + String(error.message || error);
       }
-    }
-
-    function scoreMeaning(type, value) {
-      const score = Number(value || 0);
-      if (type === "risk") {
-        if (score >= 70) {
-          return `${score} high`;
-        }
-        if (score >= 45) {
-          return `${score} medium`;
-        }
-        return `${score} lower`;
-      }
-      if (score >= 85) {
-        return `${score} strong`;
-      }
-      if (score >= 65) {
-        return `${score} useful`;
-      }
-      return `${score} weak`;
-    }
-
-    function renderLessons(lessons) {
-      elements.lessonCountText.textContent = lessons.length + " shown";
-
-      if (!lessons.length) {
-        elements.lessonsList.innerHTML = '<li class="empty">No lessons loaded.</li>';
-        return;
-      }
-
-      elements.lessonsList.innerHTML = lessons.map((lesson) => `
-        <li class="lesson">
-          <h3>${escapeHtml(lesson.title || "Lesson")}</h3>
-          <p class="muted">${escapeHtml(lesson.lesson || "")}</p>
-          <span class="muted">${escapeHtml(lesson.source || "market_tracking")} | ${formatDateTime(lesson.created_at)}</span>
-        </li>
-      `).join("");
     }
 
     function scoreHtml(item) {
@@ -1528,115 +1392,124 @@
       `;
     }
 
-    function linkHtml(url) {
-      if (!url) {
-        return '<span class="muted">None</span>';
+    function scoreMeaning(type, value) {
+      const score = Number(value || 0);
+      if (type === "risk") {
+        if (score >= 70) return `${score} high`;
+        if (score >= 45) return `${score} medium`;
+        return `${score} lower`;
       }
-
-      return `<a href="${escapeAttribute(url)}" target="_blank" rel="noopener">Open</a>`;
-    }
-
-    function linkButtonHtml(url) {
-      if (!url) {
-        return '<span class="muted">No source link saved</span>';
-      }
-
-      return `<a href="${escapeAttribute(url)}" target="_blank" rel="noopener">Open source listing</a>`;
+      if (score >= 85) return `${score} strong`;
+      if (score >= 65) return `${score} useful`;
+      return `${score} weak`;
     }
 
     function sortOpportunities(opportunities) {
       return [...opportunities].sort((a, b) => {
         const recA = recommendationWeight[a.recommendation] || 0;
         const recB = recommendationWeight[b.recommendation] || 0;
-        return recB - recA || Number(b.opportunity_score || 0) - Number(a.opportunity_score || 0);
+        return recB - recA || Number(b.opportunity_score || 0) - Number(a.opportunity_score || 0) || Number(a.risk_score || 0) - Number(b.risk_score || 0);
       });
+    }
+
+    function parseSourceHealth(value) {
+      if (!value) return [];
+      if (Array.isArray(value)) return value;
+      if (typeof value === "string") {
+        try {
+          const parsed = JSON.parse(value);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+      return [];
     }
 
     function formatMoney(value, itemOrSource, country) {
       const number = Number(value || 0);
-      if (!number) {
-        return "unknown";
-      }
-
+      if (!number) return "unknown";
       const currency = currencyFor(itemOrSource, country);
       return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(number) + " " + currency;
     }
 
     function currencyFor(itemOrSource, country) {
       if (typeof itemOrSource === "object" && itemOrSource !== null) {
-        if (itemOrSource.currency) {
-          return itemOrSource.currency;
-        }
+        if (itemOrSource.currency) return itemOrSource.currency;
         country = itemOrSource.country;
         itemOrSource = itemOrSource.source;
       }
-
       const sourceText = String(itemOrSource || "").toLowerCase();
-      if (country === "Sweden" || sourceText.includes("bolagsplatsen") || sourceText.includes("kronofogden")) {
-        return "SEK";
-      }
-      if (sourceText.includes("microns") || sourceText.includes("flippa") || sourceText.includes("empire")) {
-        return "USD";
-      }
+      if (country === "Sweden" || sourceText.includes("bolagsplatsen") || sourceText.includes("kronofogden")) return "SEK";
+      if (sourceText.includes("microns") || sourceText.includes("flippa") || sourceText.includes("empire")) return "USD";
       return "source currency";
     }
 
     function formatDateTime(value) {
-      if (!value) {
-        return "unknown";
-      }
-
+      if (!value) return "unknown";
       try {
-        return new Intl.DateTimeFormat("en-GB", {
-          dateStyle: "medium",
-          timeStyle: "short"
-        }).format(new Date(value));
+        return new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
       } catch {
         return value;
       }
     }
 
     function numberText(value) {
-      const number = Number(value || 0);
-      return new Intl.NumberFormat("en-US").format(number);
+      return new Intl.NumberFormat("en-US").format(Number(value || 0));
     }
 
     function cleanUrl(value) {
       return String(value || "").trim().replace(/\/+$/, "");
     }
 
-    function setMessage(text, type) {
-      elements.messageBox.textContent = text;
-      elements.messageBox.className = "message" + (type ? " " + type : "");
-    }
-
     function setBadge(text, type) {
       elements.connectionBadge.textContent = text;
-      elements.connectionBadge.className = "status-badge " + type;
+      elements.connectionBadge.className = "badge" + (type ? " " + type : "");
+    }
+
+    function showMessage(text, type) {
+      elements.messageBox.textContent = text;
+      elements.messageBox.className = "message visible" + (type ? " " + type : "");
     }
 
     function buildErrorMessage(error) {
       const text = String(error.message || error);
-      if (text.toLowerCase().includes("permission denied") || text.toLowerCase().includes("rls")) {
-        return "Dashboard cannot read Supabase yet. Cezar is still working, but the browser needs read permission. Send this screen to Codex.";
-      }
       if (text.toLowerCase().includes("invalid api key")) {
-        return "The publishable key looks wrong. Use the key that starts with sb_publishable, not the secret key.";
+        return "The publishable key looks wrong. Use the key that starts with sb_publishable.";
+      }
+      if (text.toLowerCase().includes("permission denied") || text.toLowerCase().includes("rls")) {
+        return "Dashboard cannot read Supabase yet. Check read access policies.";
       }
       return "Could not load Cezar data: " + text;
     }
 
-    async function copyReport() {
-      if (!state.latestReportText) {
-        setMessage("No report loaded to copy.", "error");
+    function openDialog(id, shouldOpen = true) {
+      const dialog = document.getElementById(id);
+      if (!dialog) return;
+      if (!shouldOpen) {
+        dialog.close();
         return;
       }
+      if (id === "settingsDialog") {
+        applySettingsToInputs();
+      }
+      dialog.showModal();
+    }
 
+    function togglePassword(input) {
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    async function copyReport() {
+      if (!state.latestReportText) {
+        showMessage("No report loaded to copy.", "error");
+        return;
+      }
       try {
         await navigator.clipboard.writeText(state.latestReportText);
-        setMessage("Report copied.", "ok");
+        showMessage("Report copied.", "ok");
       } catch {
-        setMessage("Copy failed in this browser. Select the report text manually if needed.", "error");
+        showMessage("Copy failed. Select the report text manually.", "error");
       }
     }
 
