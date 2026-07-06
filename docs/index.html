@@ -235,10 +235,31 @@
       color: var(--red);
     }
 
-    .summary-grid {
+    .snapshot-panel {
       display: grid;
-      grid-template-columns: 1.4fr repeat(4, minmax(140px, 1fr));
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+      padding: 12px;
+    }
+
+    .snapshot-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 12px;
+    }
+
+    .snapshot-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .snapshot-grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 1.8fr) repeat(4, minmax(118px, 1fr));
+      gap: 8px;
     }
 
     .panel,
@@ -252,19 +273,20 @@
     .summary-card {
       display: grid;
       align-content: start;
-      gap: 10px;
-      min-height: 140px;
-      padding: 18px;
+      gap: 7px;
+      min-height: 98px;
+      padding: 12px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
     }
 
     .summary-card h2 {
       margin: 0;
-      font-size: 15px;
+      font-size: 13px;
       color: var(--muted);
     }
 
     .summary-card strong {
-      font-size: clamp(22px, 2vw, 32px);
+      font-size: clamp(18px, 1.7vw, 24px);
       line-height: 1.15;
     }
 
@@ -276,44 +298,54 @@
     .metric {
       display: grid;
       align-content: center;
-      gap: 6px;
-      min-height: 120px;
-      padding: 16px;
+      gap: 3px;
+      min-height: 78px;
+      padding: 10px 12px;
     }
 
     .metric span {
       color: var(--muted);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 800;
     }
 
     .metric strong {
-      font-size: 28px;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .metric p {
+      font-size: 13px;
     }
 
     .quick-row {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      gap: 8px;
     }
 
     .quick-card {
       border: 1px solid var(--line);
-      border-radius: 10px;
-      background: var(--panel);
-      padding: 16px;
+      border-radius: 8px;
+      background: var(--panel-2);
+      padding: 10px 12px;
     }
 
     .quick-card span {
       color: var(--muted);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 800;
     }
 
     .quick-card strong {
       display: block;
-      margin: 7px 0 4px;
-      font-size: 20px;
+      margin: 4px 0 2px;
+      font-size: 17px;
+      line-height: 1.2;
+    }
+
+    .quick-card p {
+      font-size: 13px;
     }
 
     .panel {
@@ -596,8 +628,18 @@
     }
 
     @media (max-width: 1080px) {
-      .summary-grid,
-      .quick-row,
+      .snapshot-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .summary-card {
+        grid-column: 1 / -1;
+      }
+
+      .quick-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
       .opportunity-shell {
         grid-template-columns: 1fr;
       }
@@ -621,12 +663,28 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .snapshot-grid,
+      .quick-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .summary-card {
+        grid-column: 1 / -1;
+      }
+
       main {
         padding: 14px;
       }
 
       .drawer-grid,
       .facts {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .snapshot-grid,
+      .quick-row {
         grid-template-columns: 1fr;
       }
     }
@@ -683,49 +741,54 @@
     <main>
       <div id="messageBox" class="message">Loading...</div>
 
-      <section class="summary-grid">
-        <div class="summary-card">
-          <h2>Best Next Move</h2>
-          <strong id="bestMoveTitle">Load Cezar data</strong>
-          <p id="bestMoveReason" class="muted">The strongest opportunity will appear here.</p>
+      <section class="snapshot-panel">
+        <div class="snapshot-head">
+          <h2>Boss Snapshot</h2>
+          <span class="muted">Quick status before the opportunity list</span>
         </div>
-        <div class="metric">
-          <span>Status</span>
-          <strong id="metricStatus">-</strong>
-          <p id="metricEmail" class="muted">Email: daily</p>
+        <div class="snapshot-grid">
+          <div class="summary-card">
+            <h2>Best Next Move</h2>
+            <strong id="bestMoveTitle">Load Cezar data</strong>
+            <p id="bestMoveReason" class="muted">The strongest opportunity will appear here.</p>
+          </div>
+          <div class="metric">
+            <span>Status</span>
+            <strong id="metricStatus">-</strong>
+            <p id="metricEmail" class="muted">Email: daily</p>
+          </div>
+          <div class="metric">
+            <span>Scanned</span>
+            <strong id="metricScanned">0</strong>
+            <p id="metricNew" class="muted">0 new</p>
+          </div>
+          <div class="metric">
+            <span>Today</span>
+            <strong id="metricDecision">0</strong>
+            <p id="metricDecisionNote" class="muted">Act items</p>
+          </div>
+          <div class="metric">
+            <span>Memory</span>
+            <strong id="metricTracking">0</strong>
+            <p id="metricLearning" class="muted">0 lessons</p>
+          </div>
         </div>
-        <div class="metric">
-          <span>Scanned</span>
-          <strong id="metricScanned">0</strong>
-          <p id="metricNew" class="muted">0 new</p>
-        </div>
-        <div class="metric">
-          <span>Today</span>
-          <strong id="metricDecision">0</strong>
-          <p id="metricDecisionNote" class="muted">Act items</p>
-        </div>
-        <div class="metric">
-          <span>Memory</span>
-          <strong id="metricTracking">0</strong>
-          <p id="metricLearning" class="muted">0 lessons</p>
-        </div>
-      </section>
-
-      <section class="quick-row">
-        <div class="quick-card">
-          <span>Watch</span>
-          <strong id="watchTitle">No price movement</strong>
-          <p id="watchText" class="muted">Cezar will keep tracking the market.</p>
-        </div>
-        <div class="quick-card">
-          <span>Learning</span>
-          <strong id="learningTitle">No new lesson</strong>
-          <p id="learningText" class="muted">Learning continues in the background.</p>
-        </div>
-        <div class="quick-card">
-          <span>System</span>
-          <strong id="systemTitle">Health not loaded</strong>
-          <p id="systemText" class="muted">Source status appears after refresh.</p>
+        <div class="quick-row">
+          <div class="quick-card">
+            <span>Watch</span>
+            <strong id="watchTitle">No price movement</strong>
+            <p id="watchText" class="muted">Cezar will keep tracking the market.</p>
+          </div>
+          <div class="quick-card">
+            <span>Learning</span>
+            <strong id="learningTitle">No new lesson</strong>
+            <p id="learningText" class="muted">Learning continues in the background.</p>
+          </div>
+          <div class="quick-card">
+            <span>System</span>
+            <strong id="systemTitle">Health not loaded</strong>
+            <p id="systemText" class="muted">Source status appears after refresh.</p>
+          </div>
         </div>
       </section>
 
