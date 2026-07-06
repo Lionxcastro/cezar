@@ -1186,6 +1186,7 @@
       const topSources = Object.entries(sourceCounts)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 4);
+      const savedSourceHealth = parseSourceHealth(status.source_health);
       const priceChanges = Number(status.price_changes || 0);
       const missed = Number(status.missed_observations || 0);
       const visibilityDrops = Number(status.visibility_drops || 0);
@@ -1198,9 +1199,16 @@
         healthCard("Visibility drops", numberText(visibilityDrops), visibilityDrops ? "Cezar saw repeated disappearance signals." : "No repeated disappearance signals this run.")
       ];
 
-      topSources.forEach(([source, count]) => {
-        cards.push(healthCard(source, numberText(count), "loaded in the dashboard"));
-      });
+      if (savedSourceHealth.length) {
+        savedSourceHealth.forEach((item) => {
+          const statusText = `${item.status || "unknown"} (${numberText(item.found || 0)})`;
+          cards.push(healthCard(item.source || "Unknown source", statusText, item.note || "latest cloud scan"));
+        });
+      } else {
+        topSources.forEach(([source, count]) => {
+          cards.push(healthCard(source, numberText(count), "loaded in the dashboard"));
+        });
+      }
 
       elements.sourceHealthText.textContent = `${numberText(opportunities.length)} opportunities loaded`;
       elements.sourceHealthGrid.innerHTML = cards.join("");
@@ -1214,6 +1222,24 @@
           <p class="muted">${escapeHtml(note)}</p>
         </div>
       `;
+    }
+
+    function parseSourceHealth(value) {
+      if (!value) {
+        return [];
+      }
+      if (Array.isArray(value)) {
+        return value;
+      }
+      if (typeof value === "string") {
+        try {
+          const parsed = JSON.parse(value);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+      return [];
     }
 
     function countBy(rows, key) {
