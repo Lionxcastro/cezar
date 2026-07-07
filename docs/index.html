@@ -492,6 +492,11 @@
       color: var(--blue);
     }
 
+    .data-badge.proof {
+      background: var(--green-soft);
+      color: var(--green);
+    }
+
     .data-badge span {
       color: inherit;
       font-size: 12px;
@@ -569,6 +574,33 @@
     .fact strong {
       display: block;
       margin-top: 4px;
+    }
+
+    .truth-box {
+      display: grid;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .truth-box h3,
+    .truth-box h4 {
+      margin: 0;
+    }
+
+    .truth-box h4 {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .truth-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .truth-list li {
+      margin: 4px 0;
     }
 
     .detail-actions,
@@ -1167,7 +1199,7 @@
         const [statusRows, reportRows, opportunityRows, lessonRows, trackingCount] = await Promise.all([
           supabaseGet("/rest/v1/cezar_status?id=eq.main&select=*"),
           supabaseGet("/rest/v1/reports?select=*&order=created_at.desc&limit=1"),
-          supabaseGet("/rest/v1/opportunities?select=id,name,source,url,category,country,price,monthly_revenue,currency,description,opportunity_score,boss_fit_score,risk_score,learning_score,recommendation,status,first_seen_at,last_seen_at,seen_count,missed_count,price_change_count,last_market_signal,created_at,updated_at&order=opportunity_score.desc&limit=100"),
+          supabaseGet("/rest/v1/opportunities?select=id,name,source,url,category,country,price,monthly_revenue,currency,description,opportunity_score,boss_fit_score,risk_score,learning_score,known_facts,missing_questions,decision_gate,next_check,data_quality_score,proof_level,recommendation,status,first_seen_at,last_seen_at,seen_count,missed_count,price_change_count,last_market_signal,created_at,updated_at&order=opportunity_score.desc&limit=100"),
           supabaseGet("/rest/v1/lessons?select=*&order=created_at.desc&limit=12"),
           supabaseCount("/rest/v1/market_tracking?select=id&limit=1")
         ]);
@@ -1262,7 +1294,7 @@
 
       if (firstReview) {
         elements.bestMoveTitle.textContent = firstReview.name;
-        elements.bestMoveReason.textContent = `${firstReview.recommendation || "Monitor"} from ${firstReview.source || "unknown source"} with opportunity score ${numberText(firstReview.opportunity_score)}, risk ${numberText(firstReview.risk_score)}, and data status: ${dataConfidenceLabel(firstReview)}. Next: ${nextCheck(firstReview)}.`;
+        elements.bestMoveReason.textContent = `${firstReview.recommendation || "Monitor"} from ${firstReview.source || "unknown source"} with opportunity score ${numberText(firstReview.opportunity_score)}, risk ${numberText(firstReview.risk_score)}, and truth gate: ${truthGate(firstReview)}. Next: ${nextCheck(firstReview)}.`;
       } else {
         elements.bestMoveTitle.textContent = "No opportunity loaded";
         elements.bestMoveReason.textContent = "Refresh Cezar data.";
@@ -1271,7 +1303,7 @@
       const priceChanges = Number(status.price_changes || 0);
       const visibilityDrops = Number(status.visibility_drops || 0);
       elements.readinessTitle.textContent = readiness.ready ? `${numberText(readiness.ready)} compare-ready` : "No compare-ready deals";
-      elements.readinessText.textContent = `${numberText(readiness.marketSignals)} market signals; ${numberText(readiness.needsChecks)} need price or revenue checks.`;
+      elements.readinessText.textContent = `${numberText(readiness.needsChecks)} need proof checks; ${numberText(readiness.marketSignals)} market-only signals.`;
       elements.watchTitle.textContent = priceChanges ? `${numberText(priceChanges)} price change${priceChanges === 1 ? "" : "s"}` : "No price movement";
       elements.watchText.textContent = visibilityDrops ? `${numberText(visibilityDrops)} visibility drop${visibilityDrops === 1 ? "" : "s"} detected.` : `${numberText(status.missed_observations)} missed observations from active sources.`;
       elements.learningTitle.textContent = status.archived_count ? `${numberText(status.archived_count)} archived` : `${numberText(status.lessons_created)} new lesson${Number(status.lessons_created) === 1 ? "" : "s"}`;
@@ -1389,19 +1421,29 @@
     }
 
     function buildReadiness(opportunities) {
-      const totals = { ready: 0, needsPrice: 0, needsRevenue: 0, marketSignals: 0, needsChecks: 0 };
+      const totals = {
+        ready: 0,
+        needsPrice: 0,
+        needsRevenue: 0,
+        needsProfit: 0,
+        needsAssets: 0,
+        needsCustomers: 0,
+        needsBasics: 0,
+        marketSignals: 0,
+        needsChecks: 0
+      };
       opportunities.forEach((item) => {
-        if (hasPrice(item) && hasRevenue(item)) {
-          totals.ready += 1;
-        } else if (!hasPrice(item) && hasRevenue(item)) {
-          totals.needsPrice += 1;
-        } else if (hasPrice(item) && !hasRevenue(item)) {
-          totals.needsRevenue += 1;
-        } else {
-          totals.marketSignals += 1;
-        }
+        const gate = truthGate(item);
+        if (gate === "Ready to compare") totals.ready += 1;
+        else if (gate === "Needs asking price") totals.needsPrice += 1;
+        else if (gate === "Needs revenue proof") totals.needsRevenue += 1;
+        else if (gate === "Needs profit proof") totals.needsProfit += 1;
+        else if (gate === "Needs asset condition") totals.needsAssets += 1;
+        else if (gate === "Needs customer proof") totals.needsCustomers += 1;
+        else if (gate === "Market signal only") totals.marketSignals += 1;
+        else totals.needsBasics += 1;
       });
-      totals.needsChecks = totals.needsPrice + totals.needsRevenue;
+      totals.needsChecks = opportunities.length - totals.ready - totals.marketSignals;
       return totals;
     }
 
@@ -1420,14 +1462,12 @@
         Monitor: 1000,
         Ignore: 0
       }[item.recommendation] || 0;
-      const dataScore = hasPrice(item) && hasRevenue(item)
-        ? 6000
-        : (hasPrice(item) || hasRevenue(item))
-          ? 1800
-          : 0;
+      const gateScore = truthGateWeight(item) * 1600;
+      const dataScore = Number(item.data_quality_score || 0) * 45;
       const riskScore = Math.max(0, 100 - Number(item.risk_score || 0));
       return (
-        dataScore
+        gateScore
+        + dataScore
         + recommendationScore
         + (Number(item.opportunity_score || 0) * 8)
         + (Number(item.boss_fit_score || 0) * 5)
@@ -1444,14 +1484,67 @@
       return Number(item && item.monthly_revenue || 0) > 0;
     }
 
+    function parseList(value) {
+      if (!value) return [];
+      if (Array.isArray(value)) return value.filter(Boolean).map(String);
+      if (typeof value === "string") {
+        try {
+          const parsed = JSON.parse(value);
+          return Array.isArray(parsed) ? parsed.filter(Boolean).map(String) : [];
+        } catch {
+          return value.trim() ? [value.trim()] : [];
+        }
+      }
+      return [];
+    }
+
+    function truthGate(item) {
+      return (item && item.decision_gate) ? item.decision_gate : fallbackTruthGate(item);
+    }
+
+    function fallbackTruthGate(item) {
+      if (hasPrice(item) && hasRevenue(item)) return "Ready to compare";
+      if (!hasPrice(item) && hasRevenue(item)) return "Needs asking price";
+      if (hasPrice(item) && !hasRevenue(item)) return "Needs revenue proof";
+      return "Market signal only";
+    }
+
+    function truthGateWeight(item) {
+      return {
+        "Ready to compare": 6,
+        "Needs profit proof": 5,
+        "Needs asset condition": 4,
+        "Needs customer proof": 4,
+        "Needs asking price": 3,
+        "Needs revenue proof": 3,
+        "Needs price and revenue": 2,
+        "Needs basic facts": 1,
+        "Market signal only": 0
+      }[truthGate(item)] || 1;
+    }
+
+    function proofText(item) {
+      const proof = item && item.proof_level ? item.proof_level : "low";
+      return `${proof} proof, ${numberText(item && item.data_quality_score)} / 100`;
+    }
+
+    function shortMissingQuestions(item) {
+      const questions = parseList(item && item.missing_questions);
+      if (!questions.length) return "No major missing questions saved.";
+      return questions.slice(0, 3).join("; ");
+    }
+
+    function truthListHtml(items, emptyText) {
+      if (!items.length) return `<p class="muted">${escapeHtml(emptyText)}</p>`;
+      return `<ul class="truth-list">${items.slice(0, 8).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+    }
+
     function dataConfidenceLabel(item) {
-      if (hasPrice(item) && hasRevenue(item)) return "price and revenue present";
-      if (!hasPrice(item) && hasRevenue(item)) return "needs asking price";
-      if (hasPrice(item) && !hasRevenue(item)) return "needs revenue proof";
-      return "market signal only";
+      return `${truthGate(item)} (${proofText(item)})`;
     }
 
     function nextCheck(item) {
+      if (item && item.next_check) return item.next_check;
       if (hasPrice(item) && hasRevenue(item)) return "verify seller and revenue";
       if (!hasPrice(item) && hasRevenue(item)) return "find asking price";
       if (hasPrice(item) && !hasRevenue(item)) return "verify monthly revenue";
@@ -1459,17 +1552,30 @@
     }
 
     function readinessBadge(item) {
+      const gate = truthGate(item);
       let level = "signal";
       let label = "Market signal";
-      if (hasPrice(item) && hasRevenue(item)) {
+      if (gate === "Ready to compare") {
         level = "ready";
         label = "Ready";
-      } else if (!hasPrice(item) && hasRevenue(item)) {
+      } else if (gate === "Needs profit proof") {
+        level = "check";
+        label = "Need profit";
+      } else if (gate === "Needs asset condition") {
+        level = "check";
+        label = "Need assets";
+      } else if (gate === "Needs customer proof") {
+        level = "check";
+        label = "Need customers";
+      } else if (gate === "Needs asking price") {
         level = "check";
         label = "Need price";
-      } else if (hasPrice(item) && !hasRevenue(item)) {
+      } else if (gate === "Needs revenue proof") {
         level = "check";
         label = "Need revenue";
+      } else if (gate === "Needs price and revenue" || gate === "Needs basic facts") {
+        level = "check";
+        label = "Need facts";
       }
       return `<span class="data-badge ${level}">${escapeHtml(label)}<span>${escapeHtml(nextCheck(item))}</span></span>`;
     }
@@ -1483,7 +1589,7 @@
     function filteredOpportunities() {
       return state.opportunities.filter((item) => {
         if (state.activeFilter === "all") return true;
-        if (state.activeFilter === "ready") return hasPrice(item) && hasRevenue(item);
+        if (state.activeFilter === "ready") return truthGate(item) === "Ready to compare";
         if (state.activeFilter === "act") return item.recommendation === "Act";
         if (state.activeFilter === "investigate") return item.recommendation === "Investigate";
         if (state.activeFilter === "sweden") return item.country === "Sweden";
@@ -1498,6 +1604,8 @@
         return;
       }
       const decisionClass = String(item.recommendation || "Monitor").toLowerCase();
+      const knownFacts = parseList(item.known_facts);
+      const missingQuestions = parseList(item.missing_questions);
       elements.opportunityDetail.innerHTML = `
         <div class="detail-title">
           <span class="pill ${escapeHtml(decisionClass)}">${escapeHtml(item.recommendation || "Monitor")}</span>
@@ -1508,13 +1616,23 @@
           <h3>Why Cezar shows this</h3>
           <p class="muted">${escapeHtml(recommendationReason(item))}</p>
         </div>
+        <div class="truth-box">
+          <h3>Truth check</h3>
+          <p class="muted">Gate: ${escapeHtml(truthGate(item))}. Proof: ${escapeHtml(proofText(item))}. Next: ${escapeHtml(nextCheck(item))}.</p>
+          <h4>Known facts</h4>
+          ${truthListHtml(knownFacts, "Cezar has not saved enough hard facts yet.")}
+          <h4>Missing questions</h4>
+          ${truthListHtml(missingQuestions, "No major missing questions saved.")}
+        </div>
         <div class="facts">
           ${fact("Opportunity", scoreMeaning("opportunity", item.opportunity_score))}
           ${fact("Boss Fit", scoreMeaning("boss", item.boss_fit_score))}
           ${fact("Risk", scoreMeaning("risk", item.risk_score))}
           ${fact("Learning", scoreMeaning("learning", item.learning_score))}
-          ${fact("Data", dataConfidenceLabel(item))}
+          ${fact("Truth Gate", truthGate(item))}
+          ${fact("Proof", proofText(item))}
           ${fact("Next Check", nextCheck(item))}
+          ${fact("Missing", shortMissingQuestions(item))}
           ${fact("Price", formatMoney(item.price, item))}
           ${fact("Revenue", formatMoney(item.monthly_revenue, item))}
           ${fact("Seen", numberText(item.seen_count || 1))}
@@ -1557,14 +1675,15 @@
       const opportunity = Number(item.opportunity_score || 0);
       const fit = Number(item.boss_fit_score || 0);
       const risk = Number(item.risk_score || 0);
+      const gate = truthGate(item);
       if (item.recommendation === "Act") {
-        return `Strong signal: opportunity ${opportunity}, Boss fit ${fit}, risk ${risk}. Review before any action.`;
+        return `Strong signal with ${gate}: opportunity ${opportunity}, Boss fit ${fit}, risk ${risk}. Review proof before any action.`;
       }
       if (item.recommendation === "Investigate") {
-        return `Promising, but not automatic action. Check the listing, numbers, source, and seller quality.`;
+        return `Promising, but ${gate}. Check the missing questions before deciding.`;
       }
       if (item.recommendation === "Monitor") {
-        return `Worth watching, but Cezar needs stronger evidence before asking for attention.`;
+        return `Worth watching, but ${gate}. Cezar needs stronger evidence before asking for attention.`;
       }
       return "Not strong enough for Boss attention right now.";
     }
@@ -1618,11 +1737,7 @@
     }
 
     function sortOpportunities(opportunities) {
-      return [...opportunities].sort((a, b) => {
-        const recA = recommendationWeight[a.recommendation] || 0;
-        const recB = recommendationWeight[b.recommendation] || 0;
-        return recB - recA || Number(b.opportunity_score || 0) - Number(a.opportunity_score || 0) || Number(a.risk_score || 0) - Number(b.risk_score || 0);
-      });
+      return sortForReview(opportunities);
     }
 
     function parseSourceHealth(value) {
