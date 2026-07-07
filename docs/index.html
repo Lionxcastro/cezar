@@ -1246,7 +1246,7 @@
       const actItems = opportunities.filter((item) => item.recommendation === "Act");
       const investigateItems = opportunities.filter((item) => item.recommendation === "Investigate");
       const readiness = buildReadiness(opportunities);
-      const firstReview = actItems[0] || investigateItems[0] || opportunities[0];
+      const firstReview = bestNextMoveOpportunity(opportunities);
 
       elements.lastRunText.textContent = status.last_run_at ? "Last run: " + formatDateTime(status.last_run_at) : "No run loaded";
       elements.metricStatus.textContent = status.last_status || "unknown";
@@ -1262,7 +1262,7 @@
 
       if (firstReview) {
         elements.bestMoveTitle.textContent = firstReview.name;
-        elements.bestMoveReason.textContent = `${firstReview.recommendation || "Monitor"} from ${firstReview.source || "unknown source"} with opportunity score ${numberText(firstReview.opportunity_score)} and risk ${numberText(firstReview.risk_score)}.`;
+        elements.bestMoveReason.textContent = `${firstReview.recommendation || "Monitor"} from ${firstReview.source || "unknown source"} with opportunity score ${numberText(firstReview.opportunity_score)}, risk ${numberText(firstReview.risk_score)}, and data status: ${dataConfidenceLabel(firstReview)}. Next: ${nextCheck(firstReview)}.`;
       } else {
         elements.bestMoveTitle.textContent = "No opportunity loaded";
         elements.bestMoveReason.textContent = "Refresh Cezar data.";
@@ -1351,7 +1351,7 @@
     }
 
     function renderOpportunities() {
-      const opportunities = filteredOpportunities();
+      const opportunities = sortForReview(filteredOpportunities());
       elements.opportunityCountText.textContent = `${opportunities.length} shown / ${state.opportunities.length} loaded`;
       if (!opportunities.length) {
         elements.opportunitiesBody.innerHTML = '<tr><td colspan="7"><div class="empty">No opportunities match this filter.</div></td></tr>';
@@ -1371,7 +1371,7 @@
             <td><span class="pill ${escapeHtml(decisionClass)}">${escapeHtml(item.recommendation || "Monitor")}</span></td>
             <td>
               <div class="name-cell">
-                <strong>${escapeHtml(item.name || "Untitled")}</strong>
+                <strong title="${escapeAttribute(item.name || "Untitled")}">${escapeHtml(shortText(item.name || "Untitled", 92))}</strong>
                 <span class="muted description-line">${escapeHtml(item.description || "")}</span>
               </div>
             </td>
@@ -1403,6 +1403,37 @@
       });
       totals.needsChecks = totals.needsPrice + totals.needsRevenue;
       return totals;
+    }
+
+    function bestNextMoveOpportunity(opportunities) {
+      return sortForReview(opportunities)[0] || null;
+    }
+
+    function sortForReview(opportunities) {
+      return [...opportunities].sort((a, b) => reviewRank(b) - reviewRank(a));
+    }
+
+    function reviewRank(item) {
+      const recommendationScore = {
+        Act: 4000,
+        Investigate: 3000,
+        Monitor: 1000,
+        Ignore: 0
+      }[item.recommendation] || 0;
+      const dataScore = hasPrice(item) && hasRevenue(item)
+        ? 6000
+        : (hasPrice(item) || hasRevenue(item))
+          ? 1800
+          : 0;
+      const riskScore = Math.max(0, 100 - Number(item.risk_score || 0));
+      return (
+        dataScore
+        + recommendationScore
+        + (Number(item.opportunity_score || 0) * 8)
+        + (Number(item.boss_fit_score || 0) * 5)
+        + (Number(item.learning_score || 0) * 2)
+        + riskScore
+      );
     }
 
     function hasPrice(item) {
@@ -1441,6 +1472,12 @@
         label = "Need revenue";
       }
       return `<span class="data-badge ${level}">${escapeHtml(label)}<span>${escapeHtml(nextCheck(item))}</span></span>`;
+    }
+
+    function shortText(value, maxLength) {
+      const text = String(value || "").trim();
+      if (text.length <= maxLength) return text;
+      return text.slice(0, Math.max(0, maxLength - 3)).trimEnd() + "...";
     }
 
     function filteredOpportunities() {
