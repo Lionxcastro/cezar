@@ -1518,10 +1518,39 @@
         .replace(/\b\w/g, (character) => character.toUpperCase());
     }
 
-    function factObjectHtml(facts, emptyText) {
-      const entries = Object.entries(facts || {}).filter(([, value]) => value).slice(0, 10);
+    const INTERNAL_FACT_KEYS = new Set(["possible_clues", "_clues", "clues"]);
+
+    function factValueIsText(value) {
+      return value !== undefined && value !== null && value !== "" && typeof value !== "object";
+    }
+
+    function confirmedFactEntries(facts) {
+      return Object.entries(facts || {})
+        .filter(([key, value]) => !INTERNAL_FACT_KEYS.has(key) && factValueIsText(value))
+        .slice(0, 10);
+    }
+
+    function clueFactEntries(facts) {
+      const clueSource = (facts && (facts.possible_clues || facts.clues || facts._clues)) || {};
+      if (!clueSource || typeof clueSource !== "object") return [];
+      return Object.entries(clueSource).filter(([, value]) => factValueIsText(value)).slice(0, 8);
+    }
+
+    function factEntriesHtml(entries, emptyText) {
       if (!entries.length) return `<p class="muted">${escapeHtml(emptyText)}</p>`;
       return `<ul class="truth-list">${entries.map(([key, value]) => `<li><strong>${escapeHtml(titleCaseFact(key))}:</strong> ${escapeHtml(shortText(value, 220))}</li>`).join("")}</ul>`;
+    }
+
+    function confirmedFactsHtml(facts, emptyText) {
+      return factEntriesHtml(confirmedFactEntries(facts), emptyText);
+    }
+
+    function clueFactsHtml(facts, emptyText) {
+      return factEntriesHtml(clueFactEntries(facts), emptyText);
+    }
+
+    function factObjectHtml(facts, emptyText) {
+      return confirmedFactsHtml(facts, emptyText);
     }
 
     function truthGate(item) {
@@ -1650,8 +1679,11 @@
           <p class="muted">Gate: ${escapeHtml(truthGate(item))}. Proof: ${escapeHtml(proofText(item))}. Next: ${escapeHtml(nextCheck(item))}.</p>
           <h4>Reader summary</h4>
           <p class="muted">${escapeHtml(item.source_detail_summary || "Only basic listing text is saved so far.")}</p>
-          <h4>Extracted listing facts</h4>
-          ${factObjectHtml(extractedFacts, "No extra listing facts extracted yet.")}
+          <h4>Confirmed listing facts</h4>
+          ${confirmedFactsHtml(extractedFacts, "No confirmed extra facts extracted yet.")}
+          <h4>Possible clues</h4>
+          <p class="muted">Clues help Cezar ask better questions, but they do not count as proof.</p>
+          ${clueFactsHtml(extractedFacts, "No weak clues saved.")}
           <h4>Known facts</h4>
           ${truthListHtml(knownFacts, "Cezar has not saved enough hard facts yet.")}
           <h4>Missing questions</h4>
