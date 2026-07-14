@@ -753,6 +753,50 @@
         grid-template-columns: 1fr;
       }
     }
+
+    .preference-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin-bottom: 18px;
+    }
+
+    .preference-grid label {
+      display: grid;
+      font-weight: 800;
+      gap: 6px;
+    }
+
+    .preference-grid input,
+    .preference-grid select {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font: inherit;
+      padding: 12px;
+    }
+
+    .preference-categories {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      margin-bottom: 16px;
+    }
+
+    .preference-option {
+      align-items: center;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      gap: 8px;
+      padding: 10px 12px;
+    }
+
+    .preference-option input {
+      accent-color: var(--blue);
+      width: auto;
+    }
   </style>
 </head>
 <body>
@@ -796,6 +840,7 @@
         <span id="connectionBadge" class="badge">not loaded</span>
         <button id="refreshButton" class="primary" type="button">Refresh</button>
         <button type="button" data-open="settingsDialog">Settings</button>
+        <button type="button" data-open="preferencesDialog">Boss Preferences</button>
         <button type="button" data-open="explainDialog">Explain</button>
         <button type="button" data-open="reportDialog">Report</button>
         <button type="button" data-open="learningDialog">Learning</button>
@@ -934,6 +979,53 @@
     </div>
   </dialog>
 
+  <dialog id="preferencesDialog" class="drawer">
+    <div class="drawer-head">
+      <h2>Boss Preferences</h2>
+      <button class="ghost" type="button" data-close>X</button>
+    </div>
+    <div class="drawer-body">
+      <p class="muted">These are Boss choices. Cezar still learns the market automatically in the background.</p>
+      <div class="preference-grid">
+        <label>
+          Currency
+          <select id="prefCurrency">
+            <option value="SEK">SEK - Swedish krona</option>
+            <option value="USD">USD - Dollar</option>
+            <option value="EUR">EUR - Euro</option>
+          </select>
+        </label>
+        <label>
+          Market
+          <select id="prefMarket">
+            <option value="Sweden">Sweden</option>
+            <option value="Europe">Europe</option>
+            <option value="United States">United States</option>
+          </select>
+        </label>
+        <label>
+          Budget
+          <input id="prefBudget" inputmode="numeric" placeholder="Example: 500000">
+        </label>
+        <label>
+          Risk tolerance
+          <select id="prefRisk">
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+      </div>
+      <h3>Categories</h3>
+      <p class="muted">Choose more than one. The default list matches what Cezar already searches.</p>
+      <div id="prefCategories" class="preference-categories"></div>
+      <div class="detail-actions">
+        <button id="savePreferencesButton" class="primary" type="button">Save Boss Preferences</button>
+        <span id="preferencesStatus" class="muted"></span>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="explainDialog" class="drawer">
     <div class="drawer-head">
       <h2>Explain</h2>
@@ -999,8 +1091,33 @@
     const settingsKey = "cezar-dashboard-settings-v2";
     const oldSettingsKey = "cezar-dashboard-settings-v1";
     const recommendationWeight = { Act: 4, Investigate: 3, Monitor: 2, Ignore: 1 };
+    const defaultCategories = [
+      "SaaS",
+      "marketplace",
+      "content",
+      "ecommerce",
+      "e-commerce",
+      "mobile app",
+      "business",
+      "construction",
+      "manufacturing",
+      "hospitality",
+      "commercial property",
+      "auction",
+      "services",
+      "AI"
+    ];
+    const defaultPreferences = {
+      preferred_currency: "SEK",
+      preferred_market: "Sweden",
+      preferred_budget: "",
+      preferred_country: "Sweden",
+      preferred_categories: defaultCategories,
+      risk_tolerance: "medium"
+    };
     const state = {
       settings: loadSettings(),
+      preferences: { ...defaultPreferences, preferred_categories: [...defaultCategories] },
       latestReportText: "",
       latestReport: {},
       latestStatus: {},
@@ -1025,6 +1142,13 @@
       settingsClearButton: document.getElementById("settingsClearButton"),
       refreshButton: document.getElementById("refreshButton"),
       copyReportButton: document.getElementById("copyReportButton"),
+      prefCurrency: document.getElementById("prefCurrency"),
+      prefMarket: document.getElementById("prefMarket"),
+      prefBudget: document.getElementById("prefBudget"),
+      prefRisk: document.getElementById("prefRisk"),
+      prefCategories: document.getElementById("prefCategories"),
+      savePreferencesButton: document.getElementById("savePreferencesButton"),
+      preferencesStatus: document.getElementById("preferencesStatus"),
       connectionBadge: document.getElementById("connectionBadge"),
       messageBox: document.getElementById("messageBox"),
       lastRunText: document.getElementById("lastRunText"),
@@ -1081,6 +1205,8 @@
       elements.settingsClearButton.addEventListener("click", clearSettings);
       elements.refreshButton.addEventListener("click", loadDashboard);
       elements.copyReportButton.addEventListener("click", copyReport);
+      elements.savePreferencesButton.addEventListener("click", saveBossPreferences);
+      renderPreferenceChoices();
 
       document.querySelectorAll("[data-open]").forEach((button) => {
         button.addEventListener("click", () => openDialog(button.dataset.open));
@@ -1196,14 +1322,16 @@
       setBadge("loading", "");
 
       try {
-        const [statusRows, reportRows, opportunityRows, lessonRows, trackingCount] = await Promise.all([
+        const [statusRows, reportRows, opportunityRows, lessonRows, trackingCount, preferenceRows] = await Promise.all([
           supabaseGet("/rest/v1/cezar_status?id=eq.main&select=*"),
           supabaseGet("/rest/v1/reports?select=*&order=created_at.desc&limit=1"),
           supabaseGet("/rest/v1/opportunities?select=id,name,source,url,category,country,price,monthly_revenue,currency,description,opportunity_score,boss_fit_score,risk_score,learning_score,known_facts,missing_questions,decision_gate,next_check,data_quality_score,proof_level,extracted_facts,seller_questions,document_requests,source_detail_status,source_detail_summary,recommendation,status,first_seen_at,last_seen_at,seen_count,missed_count,price_change_count,last_market_signal,created_at,updated_at&order=opportunity_score.desc&limit=100"),
           supabaseGet("/rest/v1/lessons?select=*&order=created_at.desc&limit=12"),
-          supabaseCount("/rest/v1/market_tracking?select=id&limit=1")
+          supabaseCount("/rest/v1/market_tracking?select=id&limit=1"),
+          loadBossPreferences()
         ]);
 
+        state.preferences = mergeBossPreferences(preferenceRows);
         state.latestStatus = statusRows[0] || {};
         state.latestReport = reportRows[0] || {};
         state.latestReportText = state.latestReport.report_text || "";
@@ -1214,6 +1342,7 @@
           state.selectedOpportunityId = state.opportunities[0].id;
         }
 
+        renderPreferenceChoices();
         renderDashboard();
         showMessage("Cezar data loaded.", "ok");
         setBadge("connected", "success");
@@ -1253,6 +1382,21 @@
       }
     }
 
+    async function supabaseUpsert(path, rows, conflictTarget) {
+      const response = await fetch(`${state.settings.url}${path}?on_conflict=${encodeURIComponent(conflictTarget)}`, {
+        method: "POST",
+        headers: {
+          ...buildHeaders(),
+          "Content-Type": "application/json",
+          Prefer: "resolution=merge-duplicates,return=minimal"
+        },
+        body: JSON.stringify(rows)
+      });
+      if (!response.ok) {
+        throw new Error(await readableError(response));
+      }
+    }
+
     function buildHeaders() {
       return {
         apikey: state.settings.key,
@@ -1268,6 +1412,85 @@
         return parsed.message || text || response.statusText;
       } catch {
         return text || response.statusText;
+      }
+    }
+
+    async function loadBossPreferences() {
+      try {
+        return await supabaseGet("/rest/v1/boss_preferences?select=key,value");
+      } catch {
+        return [];
+      }
+    }
+
+    function mergeBossPreferences(rows = []) {
+      const preferences = {
+        ...defaultPreferences,
+        preferred_categories: [...defaultCategories]
+      };
+      rows.forEach((row) => {
+        if (!row || !row.key) return;
+        if (row.key === "preferred_categories") {
+          const categories = String(row.value || "")
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+          preferences.preferred_categories = categories.length ? categories : [...defaultCategories];
+          return;
+        }
+        if (Object.prototype.hasOwnProperty.call(preferences, row.key)) {
+          preferences[row.key] = row.value || "";
+        }
+      });
+      return preferences;
+    }
+
+    function renderPreferenceChoices() {
+      if (!elements.prefCategories) return;
+      elements.prefCurrency.value = state.preferences.preferred_currency || "SEK";
+      elements.prefMarket.value = state.preferences.preferred_market || "Sweden";
+      elements.prefBudget.value = state.preferences.preferred_budget || "";
+      elements.prefRisk.value = state.preferences.risk_tolerance || "medium";
+      const selected = new Set(state.preferences.preferred_categories || defaultCategories);
+      elements.prefCategories.innerHTML = defaultCategories.map((category) => `
+        <label class="preference-option">
+          <input type="checkbox" value="${escapeAttribute(category)}" ${selected.has(category) ? "checked" : ""}>
+          <span>${escapeHtml(category)}</span>
+        </label>
+      `).join("");
+    }
+
+    function collectPreferenceRows() {
+      const categories = Array.from(elements.prefCategories.querySelectorAll("input:checked"))
+        .map((input) => input.value);
+      const market = elements.prefMarket.value || "Sweden";
+      const preferredCountry = market === "United States" ? "United States" : market === "Sweden" ? "Sweden" : "Europe";
+      return [
+        { key: "preferred_currency", value: elements.prefCurrency.value || "SEK" },
+        { key: "preferred_market", value: market },
+        { key: "preferred_budget", value: elements.prefBudget.value.trim() },
+        { key: "preferred_country", value: preferredCountry },
+        { key: "preferred_categories", value: (categories.length ? categories : defaultCategories).join(", ") },
+        { key: "risk_tolerance", value: elements.prefRisk.value || "medium" }
+      ];
+    }
+
+    async function saveBossPreferences() {
+      if (!state.settings.url || !state.settings.key) {
+        showMessage("Connect the dashboard first, then save Boss Preferences.", "error");
+        return;
+      }
+      elements.preferencesStatus.textContent = "Saving...";
+      try {
+        const rows = collectPreferenceRows();
+        await supabaseUpsert("/rest/v1/boss_preferences", rows, "key");
+        state.preferences = mergeBossPreferences(rows);
+        renderPreferenceChoices();
+        elements.preferencesStatus.textContent = "Saved. Cezar will use this on the next cloud run.";
+        showMessage("Boss preferences saved. Run Cezar once when you want new scoring.", "ok");
+      } catch {
+        elements.preferencesStatus.textContent = "Could not save. Run the Supabase v8 SQL first, then try again.";
+        showMessage("Boss Preferences could not save yet. The Supabase SQL step is probably missing.", "error");
       }
     }
 
@@ -1889,6 +2112,9 @@
       }
       if (id === "settingsDialog") {
         applySettingsToInputs();
+      }
+      if (id === "preferencesDialog") {
+        renderPreferenceChoices();
       }
       dialog.showModal();
     }
